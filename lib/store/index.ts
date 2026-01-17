@@ -17,6 +17,7 @@ import type {
   Task,
   TimeBlock
 } from '../types';
+import { isToday, isSameLocalDay } from '../utils/date';
 
 // ============================================
 // OBJECTIVE STORE
@@ -224,9 +225,8 @@ export const useTaskStore = create<TaskState>()(
         }),
 
       getTasksForDate: (date) => {
-        const dateStr = date.toISOString().split('T')[0];
         return get().tasks.filter(
-          (t) => new Date(t.scheduledAt).toISOString().split('T')[0] === dateStr
+          (t) => isSameLocalDay(new Date(t.scheduledAt), date)
         );
       },
 
@@ -235,15 +235,8 @@ export const useTaskStore = create<TaskState>()(
       },
 
       getTodaysTasks: () => {
-        const today = new Date().toISOString().split('T')[0];
         const allTasks = get().tasks;
-        console.log(`[TaskStore] getTodaysTasks: today=${today}, total tasks=${allTasks.length}`);
-        const todayTasks = allTasks.filter((t) => {
-          const taskDate = new Date(t.scheduledAt).toISOString().split('T')[0];
-          console.log(`[TaskStore] Task "${t.title}" date=${taskDate}, matches=${taskDate === today}`);
-          return taskDate === today;
-        });
-        console.log(`[TaskStore] Found ${todayTasks.length} tasks for today`);
+        const todayTasks = allTasks.filter((t) => isToday(new Date(t.scheduledAt)));
         return todayTasks;
       },
 

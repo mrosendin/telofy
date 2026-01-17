@@ -1,5 +1,6 @@
 import { useObjectiveStore, useTaskStore } from '@/lib/store';
 import { CATEGORY_CONFIG, type Task } from '@/lib/types';
+import { isToday } from '@/lib/utils/date';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useMemo, useState } from 'react';
 import {
@@ -164,12 +165,9 @@ export default function TasksScreen() {
   const [taskToSkip, setTaskToSkip] = useState<Task | null>(null);
   const [skipReason, setSkipReason] = useState('');
 
-  // Memoize today's tasks to avoid infinite loop
+  // Memoize today's tasks to avoid infinite loop (using local timezone)
   const todaysTasks = useMemo(() => {
-    const today = new Date().toISOString().split('T')[0];
-    return tasks.filter(
-      (t) => new Date(t.scheduledAt).toISOString().split('T')[0] === today
-    );
+    return tasks.filter((t) => isToday(new Date(t.scheduledAt)));
   }, [tasks]);
 
   // Sort tasks: in_progress first, then pending, then by time, completed/skipped last

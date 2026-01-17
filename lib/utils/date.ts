@@ -97,3 +97,18 @@ export function getDayBounds(date: Date): { start: Date; end: Date } {
 export function getWeekDates(startDate: Date = new Date()): Date[] {
   return Array.from({ length: 7 }, (_, i) => addDays(startOfDay(startDate), i));
 }
+
+/**
+ * Check if a date is the same local day as another date
+ * Uses local timezone, not UTC
+ */
+export function isSameLocalDay(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+// Re-export isToday from date-fns for convenience
+export { isToday, isTomorrow, isYesterday };

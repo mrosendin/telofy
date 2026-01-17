@@ -5,28 +5,22 @@ import { Link } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useObjectiveStore, useTaskStore } from '@/lib/store';
 import { CATEGORY_CONFIG, type Objective, type Task } from '@/lib/types';
+import { isToday } from '@/lib/utils/date';
 
-// Helper to get today's date string
-const getTodayString = () => new Date().toISOString().split('T')[0];
-
-// Helper to filter today's tasks
+// Helper to filter today's tasks (using local timezone)
 const filterTodaysTasks = (tasks: Task[]) => {
-  const today = getTodayString();
-  return tasks.filter(
-    (t) => new Date(t.scheduledAt).toISOString().split('T')[0] === today
-  );
+  return tasks.filter((t) => isToday(new Date(t.scheduledAt)));
 };
 
 function ObjectiveStatusCard({ objective, allTasks }: { objective: Objective; allTasks: Task[] }) {
   const categoryConfig = CATEGORY_CONFIG[objective.category];
   
-  // Filter tasks for this objective
+  // Filter tasks for this objective (using local timezone)
   const tasks = useMemo(() => {
-    const today = getTodayString();
     return allTasks.filter(
       (t) =>
         t.objectiveId === objective.id &&
-        new Date(t.scheduledAt).toISOString().split('T')[0] === today
+        isToday(new Date(t.scheduledAt))
     );
   }, [allTasks, objective.id]);
   

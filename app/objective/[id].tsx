@@ -7,6 +7,7 @@ import {
   TextInput,
   Modal,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -14,6 +15,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useObjectiveStore, useTaskStore } from '@/lib/store';
 import { generateTaskPlan } from '@/lib/api/openai';
 import { generateId } from '@/lib/utils/id';
+import { isToday } from '@/lib/utils/date';
 import { CATEGORY_CONFIG, type Metric, type Ritual, type Task } from '@/lib/types';
 
 type ModalType = 'metric' | 'ritual' | null;
@@ -29,13 +31,12 @@ export default function ObjectiveDetailScreen() {
   const tasks = useTaskStore((s) => s.tasks);
   const addTasks = useTaskStore((s) => s.addTasks);
   
-  // Memoize today's tasks to avoid infinite loop
+  // Memoize today's tasks to avoid infinite loop (using local timezone)
   const todaysTasks = useMemo(() => {
-    const today = new Date().toISOString().split('T')[0];
     return tasks.filter(
       (t) =>
         t.objectiveId === id &&
-        new Date(t.scheduledAt).toISOString().split('T')[0] === today
+        isToday(new Date(t.scheduledAt))
     );
   }, [tasks, id]);
 
