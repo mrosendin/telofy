@@ -1,91 +1,120 @@
-import { View, Text, ScrollView, Pressable, TextInput } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Link } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
+import { useObjectiveStore } from '@/lib/store';
+import { CATEGORY_CONFIG, type Objective } from '@/lib/types';
+
+function ObjectiveCard({ objective }: { objective: Objective }) {
+  const categoryConfig = CATEGORY_CONFIG[objective.category];
+  
+  // Calculate overall progress from pillars
+  const overallProgress = objective.pillars.length > 0
+    ? objective.pillars.reduce((sum, p) => sum + p.progress * p.weight, 0)
+    : 0;
+
+  // Count active rituals
+  const activeRituals = objective.rituals.length;
+  const completedToday = objective.rituals.filter(
+    (r) => r.lastCompletedAt && new Date(r.lastCompletedAt).toDateString() === new Date().toDateString()
+  ).length;
+
+  return (
+    <Pressable className="rounded-2xl p-5 bg-telofy-surface border border-telofy-border mb-4 active:opacity-90">
+      {/* Header */}
+      <View className="flex-row items-center mb-4">
+        <View
+          className="w-12 h-12 rounded-full items-center justify-center"
+          style={{ backgroundColor: `${categoryConfig.color}20` }}
+        >
+          <FontAwesome name={categoryConfig.icon as any} size={20} color={categoryConfig.color} />
+        </View>
+        <View className="ml-4 flex-1">
+          <Text className="text-telofy-text-secondary text-xs tracking-wide">
+            {categoryConfig.label.toUpperCase()}
+          </Text>
+          <Text className="text-telofy-text text-lg font-bold">{objective.name}</Text>
+        </View>
+        {objective.isPaused && (
+          <View className="bg-telofy-muted/20 px-2 py-1 rounded">
+            <Text className="text-telofy-muted text-xs">PAUSED</Text>
+          </View>
+        )}
+      </View>
+
+      {/* Progress */}
+      <View className="mb-4">
+        <View className="flex-row items-center justify-between mb-2">
+          <Text className="text-telofy-text-secondary text-sm">Overall Progress</Text>
+          <Text className="text-telofy-accent font-semibold">{Math.round(overallProgress)}%</Text>
+        </View>
+        <View className="h-2 bg-telofy-bg rounded-full overflow-hidden">
+          <View
+            className="h-full bg-telofy-accent rounded-full"
+            style={{ width: `${overallProgress}%` }}
+          />
+        </View>
+      </View>
+
+      {/* Stats Row */}
+      <View className="flex-row">
+        <View className="flex-1">
+          <Text className="text-telofy-text font-semibold">{objective.pillars.length}</Text>
+          <Text className="text-telofy-text-secondary text-sm">Pillars</Text>
+        </View>
+        <View className="flex-1">
+          <Text className="text-telofy-text font-semibold">{objective.metrics.length}</Text>
+          <Text className="text-telofy-text-secondary text-sm">Metrics</Text>
+        </View>
+        <View className="flex-1">
+          <Text className="text-telofy-text font-semibold">
+            {completedToday}/{activeRituals}
+          </Text>
+          <Text className="text-telofy-text-secondary text-sm">Rituals Today</Text>
+        </View>
+      </View>
+
+      {/* Target Outcome */}
+      <View className="mt-4 pt-4 border-t border-telofy-border">
+        <Text className="text-telofy-text-secondary text-xs mb-1">TARGET</Text>
+        <Text className="text-telofy-text text-sm" numberOfLines={2}>
+          {objective.targetOutcome}
+        </Text>
+      </View>
+    </Pressable>
+  );
+}
+
+function EmptyState() {
+  return (
+    <View className="items-center py-16 px-8">
+      <View className="w-24 h-24 rounded-full bg-telofy-surface items-center justify-center mb-6">
+        <FontAwesome name="crosshairs" size={40} color="#22c55e" />
+      </View>
+      <Text className="text-telofy-text text-2xl font-bold text-center mb-3">
+        No objectives yet
+      </Text>
+      <Text className="text-telofy-text-secondary text-center mb-8">
+        Define what you want to achieve. Telofy will break it down into actionable pillars, metrics, and daily rituals.
+      </Text>
+      <Link href="/create-objective" asChild>
+        <Pressable className="bg-telofy-accent rounded-xl py-4 px-8 active:opacity-80">
+          <Text className="text-telofy-bg font-semibold text-lg">Create Your First Objective</Text>
+        </Pressable>
+      </Link>
+    </View>
+  );
+}
 
 export default function ObjectiveScreen() {
-  const [objectiveInput, setObjectiveInput] = useState('');
-  
-  // Mock data - will be replaced with store
-  const hasObjective = true;
-  const activeObjective = {
-    name: 'Career Advancement',
-    category: 'career',
-    description: 'Advance to senior engineering position within 12 months through skill development, visible contributions, and strategic networking.',
-    targetOutcome: 'Promotion to Senior Engineer by December 2026',
-    dailyCommitment: 90,
-    startDate: new Date('2026-01-01'),
-    daysActive: 16,
-    completionRate: 87,
-  };
+  const objectives = useObjectiveStore((s) => s.objectives);
+  const activeObjectives = objectives.filter((o) => !o.isPaused);
+  const pausedObjectives = objectives.filter((o) => o.isPaused);
 
-  if (!hasObjective) {
+  if (objectives.length === 0) {
     return (
       <SafeAreaView className="flex-1 bg-telofy-bg" edges={['bottom']}>
-        <ScrollView className="flex-1 px-5 pt-4">
-          {/* Onboarding State */}
-          <View className="items-center py-12">
-            <View className="w-20 h-20 rounded-full bg-telofy-surface items-center justify-center mb-6">
-              <FontAwesome name="crosshairs" size={32} color="#22c55e" />
-            </View>
-            <Text className="text-telofy-text text-2xl font-bold text-center mb-3">
-              Define your objective
-            </Text>
-            <Text className="text-telofy-text-secondary text-center mb-8 px-4">
-              Tell Telofy what you want to achieve. Be specific about outcomes, not activities.
-            </Text>
-          </View>
-
-          {/* Input Card */}
-          <View className="rounded-2xl p-5 bg-telofy-surface border border-telofy-border mb-6">
-            <Text className="text-telofy-text-secondary text-sm mb-3 tracking-wide">
-              WHAT DO YOU WANT TO ACHIEVE?
-            </Text>
-            <TextInput
-              className="text-telofy-text text-base p-4 rounded-xl bg-telofy-bg border border-telofy-border min-h-[120px]"
-              placeholder="e.g., Get promoted to senior engineer within 12 months..."
-              placeholderTextColor="#52525b"
-              multiline
-              textAlignVertical="top"
-              value={objectiveInput}
-              onChangeText={setObjectiveInput}
-            />
-            <Text className="text-telofy-text-secondary text-xs mt-3">
-              Telofy will analyze your input and create a structured execution plan.
-            </Text>
-          </View>
-
-          {/* Example Objectives */}
-          <Text className="text-telofy-text-secondary text-sm mb-4 tracking-wide">
-            EXAMPLES
-          </Text>
-          {[
-            { icon: 'heartbeat', label: 'Lose 20 lbs in 4 months through consistent workouts' },
-            { icon: 'briefcase', label: 'Launch side project and get first 100 users' },
-            { icon: 'graduation-cap', label: 'Pass AWS certification exam by March' },
-          ].map((example, i) => (
-            <Pressable 
-              key={i}
-              className="flex-row items-center p-4 rounded-xl bg-telofy-surface border border-telofy-border mb-3 active:opacity-80"
-              onPress={() => setObjectiveInput(example.label)}
-            >
-              <FontAwesome name={example.icon as any} size={18} color="#52525b" />
-              <Text className="flex-1 ml-4 text-telofy-text-secondary">
-                {example.label}
-              </Text>
-            </Pressable>
-          ))}
-
-          {/* Submit Button */}
-          <Pressable 
-            className={`rounded-xl py-4 items-center mt-6 ${objectiveInput.length > 10 ? 'bg-telofy-accent' : 'bg-telofy-muted'}`}
-            disabled={objectiveInput.length <= 10}
-          >
-            <Text className={`font-semibold ${objectiveInput.length > 10 ? 'text-telofy-bg' : 'text-telofy-text-secondary'}`}>
-              Create Objective
-            </Text>
-          </Pressable>
-        </ScrollView>
+        <EmptyState />
       </SafeAreaView>
     );
   }
@@ -93,94 +122,50 @@ export default function ObjectiveScreen() {
   return (
     <SafeAreaView className="flex-1 bg-telofy-bg" edges={['bottom']}>
       <ScrollView className="flex-1 px-5 pt-4">
-        {/* Objective Header */}
-        <View className="rounded-2xl p-6 bg-telofy-surface border border-telofy-border mb-6">
-          <View className="flex-row items-center mb-4">
-            <View className="w-10 h-10 rounded-full bg-telofy-accent/20 items-center justify-center">
-              <FontAwesome name="briefcase" size={18} color="#22c55e" />
-            </View>
-            <View className="ml-4 flex-1">
-              <Text className="text-telofy-text-secondary text-xs tracking-wide">
-                {activeObjective.category.toUpperCase()}
+        {/* Active Objectives */}
+        {activeObjectives.length > 0 && (
+          <>
+            <View className="flex-row items-center justify-between mb-4">
+              <Text className="text-telofy-text-secondary text-sm tracking-wide">
+                ACTIVE OBJECTIVES ({activeObjectives.length})
               </Text>
-              <Text className="text-telofy-text text-xl font-bold">
-                {activeObjective.name}
-              </Text>
+              <Link href="/create-objective" asChild>
+                <Pressable className="flex-row items-center">
+                  <FontAwesome name="plus" size={14} color="#22c55e" />
+                  <Text className="text-telofy-accent ml-2 font-medium">Add</Text>
+                </Pressable>
+              </Link>
             </View>
-            <Pressable className="p-2">
-              <FontAwesome name="ellipsis-h" size={18} color="#52525b" />
-            </Pressable>
-          </View>
-          
-          <Text className="text-telofy-text-secondary text-base mb-4 leading-6">
-            {activeObjective.description}
-          </Text>
+            {activeObjectives.map((obj) => (
+              <ObjectiveCard key={obj.id} objective={obj} />
+            ))}
+          </>
+        )}
 
-          <View className="bg-telofy-bg rounded-xl p-4">
-            <Text className="text-telofy-text-secondary text-xs mb-1 tracking-wide">
-              TARGET OUTCOME
+        {/* Paused Objectives */}
+        {pausedObjectives.length > 0 && (
+          <>
+            <Text className="text-telofy-text-secondary text-sm tracking-wide mt-6 mb-4">
+              PAUSED ({pausedObjectives.length})
             </Text>
-            <Text className="text-telofy-text font-medium">
-              {activeObjective.targetOutcome}
-            </Text>
-          </View>
-        </View>
+            {pausedObjectives.map((obj) => (
+              <ObjectiveCard key={obj.id} objective={obj} />
+            ))}
+          </>
+        )}
 
-        {/* Stats Grid */}
-        <View className="flex-row gap-3 mb-6">
-          <View className="flex-1 rounded-xl p-4 bg-telofy-surface border border-telofy-border">
-            <Text className="text-telofy-accent text-2xl font-bold">
-              {activeObjective.daysActive}
-            </Text>
-            <Text className="text-telofy-text-secondary text-sm">Days active</Text>
+        {/* Add More */}
+        {objectives.length > 0 && activeObjectives.length === 0 && (
+          <View className="items-center py-8">
+            <Link href="/create-objective" asChild>
+              <Pressable className="bg-telofy-accent rounded-xl py-4 px-8 active:opacity-80">
+                <Text className="text-telofy-bg font-semibold">Add New Objective</Text>
+              </Pressable>
+            </Link>
           </View>
-          <View className="flex-1 rounded-xl p-4 bg-telofy-surface border border-telofy-border">
-            <Text className="text-telofy-text text-2xl font-bold">
-              {activeObjective.completionRate}%
-            </Text>
-            <Text className="text-telofy-text-secondary text-sm">Completion rate</Text>
-          </View>
-          <View className="flex-1 rounded-xl p-4 bg-telofy-surface border border-telofy-border">
-            <Text className="text-telofy-text text-2xl font-bold">
-              {activeObjective.dailyCommitment}m
-            </Text>
-            <Text className="text-telofy-text-secondary text-sm">Daily time</Text>
-          </View>
-        </View>
+        )}
 
-        {/* Execution Status */}
-        <View className="rounded-2xl p-6 bg-telofy-surface border border-telofy-border mb-6">
-          <Text className="text-telofy-text-secondary text-sm mb-4 tracking-wide">
-            EXECUTION STATUS
-          </Text>
-          
-          <View className="flex-row items-center mb-4">
-            <View className="w-3 h-3 rounded-full bg-telofy-accent mr-3" />
-            <Text className="text-telofy-text font-medium">Objective aligned</Text>
-          </View>
-
-          <Text className="text-telofy-text-secondary text-sm leading-5">
-            Current trajectory supports target outcome. Maintain daily execution rate for optimal results.
-          </Text>
-        </View>
-
-        {/* Weekly Focus */}
-        <View className="rounded-2xl p-6 bg-telofy-surface border border-telofy-border mb-8">
-          <Text className="text-telofy-text-secondary text-sm mb-4 tracking-wide">
-            THIS WEEK'S FOCUS
-          </Text>
-          
-          {[
-            'Complete 3 visible code contributions',
-            'Schedule 1:1 with engineering manager',
-            'Document architecture decisions',
-          ].map((item, i) => (
-            <View key={i} className="flex-row items-start mb-3">
-              <FontAwesome name="check" size={14} color="#22c55e" style={{ marginTop: 3 }} />
-              <Text className="text-telofy-text ml-3 flex-1">{item}</Text>
-            </View>
-          ))}
-        </View>
+        <View className="h-8" />
       </ScrollView>
     </SafeAreaView>
   );

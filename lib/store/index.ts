@@ -1,63 +1,57 @@
 /**
- * Zustand store for Telofy state management
+ * Zustand stores for Telofy state management
+ * Using AsyncStorage for Expo Go compatibility
  */
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
-import { persist, createJSONStorage } from 'zustand/middleware';
-// Note: MMKV requires native module, use AsyncStorage as fallback for Expo Go
-// import { MMKV } from 'react-native-mmkv';
 import type {
-  Objective,
-  Task,
-  TimeBlock,
-  NotificationPreference,
   DailyStatus,
+  DataPoint,
   Deviation,
-  ObjectiveStatus,
+  NotificationPreference,
+  Objective,
+  RitualCompletion,
+  Task,
+  TimeBlock
 } from '../types';
 
-// Simple in-memory storage for development
-// TODO: Replace with MMKV after running `npx expo prebuild`
-const memoryStorage: Record<string, string> = {};
+// ============================================
+// OBJECTIVE STORE
+// ============================================
 
-const simpleStorage = {
-  getItem: (name: string) => {
-    return memoryStorage[name] ?? null;
-  },
-  setItem: (name: string, value: string) => {
-    memoryStorage[name] = value;
-  },
-  removeItem: (name: string) => {
-    delete memoryStorage[name];
-  },
-};
-
-// Objective store
 interface ObjectiveState {
   objectives: Objective[];
-  activeObjectiveId: string | null;
   
   // Actions
   addObjective: (objective: Objective) => void;
   updateObjective: (id: string, updates: Partial<Objective>) => void;
   removeObjective: (id: string) => void;
-  setActiveObjective: (id: string | null) => void;
-  getActiveObjective: () => Objective | null;
+  
+  // Pillar actions
+  updatePillarProgress: (objectiveId: string, pillarId: string, progress: number) => void;
+  
+  // Metric actions
+  addMetricDataPoint: (objectiveId: string, metricId: string, value: number, note?: string) => void;
+  
+  // Ritual actions
+  completeRitual: (objectiveId: string, ritualId: string, note?: string) => void;
+  
+  // Getters
+  getObjective: (id: string) => Objective | undefined;
+  getActiveObjectives: () => Objective[];
 }
 
 export const useObjectiveStore = create<ObjectiveState>()(
   persist(
     immer((set, get) => ({
       objectives: [],
-      activeObjectiveId: null,
 
       addObjective: (objective) =>
         set((state) => {
           state.objectives.push(objective);
-          if (!state.activeObjectiveId) {
-            state.activeObjectiveId = objective.id;
-          }
         }),
 
       updateObjective: (id, updates) =>
@@ -75,29 +69,81 @@ export const useObjectiveStore = create<ObjectiveState>()(
       removeObjective: (id) =>
         set((state) => {
           state.objectives = state.objectives.filter((o) => o.id !== id);
-          if (state.activeObjectiveId === id) {
-            state.activeObjectiveId = state.objectives[0]?.id ?? null;
+        }),
+
+      updatePillarProgress: (objectiveId, pillarId, progress) =>
+        set((state) => {
+          const objective = state.objectives.find((o) => o.id === objectiveId);
+          if (objective) {
+            const pillar = objective.pillars.find((p) => p.id === pillarId);
+            if (pillar) {
+              pillar.progress = Math.max(0, Math.min(100, progress));
+            }
+            objective.updatedAt = new Date();
           }
         }),
 
-      setActiveObjective: (id) =>
+      addMetricDataPoint: (objectiveId, metricId, value, note) =>
         set((state) => {
-          state.activeObjectiveId = id;
+          const objective = state.objectives.find((o) => o.id === objectiveId);
+          if (objective) {
+            const metric = objective.metrics.find((m) => m.id === metricId);
+            if (metric) {
+              const dataPoint: DataPoint = {
+                date: new Date(),
+                value,
+                note,
+              };
+              metric.history.push(dataPoint);
+              metric.current = value;
+            }
+            objective.updatedAt = new Date();
+          }
         }),
 
-      getActiveObjective: () => {
-        const state = get();
-        return state.objectives.find((o) => o.id === state.activeObjectiveId) ?? null;
+      completeRitual: (objectiveId, ritualId, note) =>
+        set((state) => {
+          const objective = state.objectives.find((o) => o.id === objectiveId);
+          if (objective) {
+            const ritual = objective.rituals.find((r) => r.id === ritualId);
+            if (ritual) {
+              const now = new Date();
+              const completion: RitualCompletion = {
+                date: now,
+                completed: true,
+                note,
+              };
+              ritual.completionHistory.push(completion);
+              ritual.lastCompletedAt = now;
+              ritual.completionsThisPeriod += 1;
+              ritual.currentStreak += 1;
+              if (ritual.currentStreak > ritual.longestStreak) {
+                ritual.longestStreak = ritual.currentStreak;
+              }
+            }
+            objective.updatedAt = new Date();
+          }
+        }),
+
+      getObjective: (id) => {
+        return get().objectives.find((o) => o.id === id);
+      },
+
+      getActiveObjectives: () => {
+        return get().objectives.filter((o) => !o.isPaused && o.status !== 'completed');
       },
     })),
     {
       name: 'telofy-objectives',
-      storage: createJSONStorage(() => simpleStorage),
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
 
-// Task store
+// ============================================
+// TASK STORE
+// ============================================
+
 interface TaskState {
   tasks: Task[];
   
@@ -107,8 +153,14 @@ interface TaskState {
   updateTask: (id: string, updates: Partial<Task>) => void;
   completeTask: (id: string) => void;
   skipTask: (id: string, reason?: string) => void;
+  startTask: (id: string) => void;
+  clearOldTasks: (daysToKeep: number) => void;
+  
+  // Getters
   getTasksForDate: (date: Date) => Task[];
   getTasksForObjective: (objectiveId: string) => Task[];
+  getTodaysTasks: () => Task[];
+  getInProgressTask: () => Task | undefined;
 }
 
 export const useTaskStore = create<TaskState>()(
@@ -152,27 +204,56 @@ export const useTaskStore = create<TaskState>()(
           }
         }),
 
+      startTask: (id) =>
+        set((state) => {
+          const index = state.tasks.findIndex((t) => t.id === id);
+          if (index !== -1) {
+            state.tasks[index].status = 'in_progress';
+          }
+        }),
+
+      clearOldTasks: (daysToKeep) =>
+        set((state) => {
+          const cutoff = new Date();
+          cutoff.setDate(cutoff.getDate() - daysToKeep);
+          state.tasks = state.tasks.filter(
+            (t) => new Date(t.scheduledAt) >= cutoff || t.status === 'pending'
+          );
+        }),
+
       getTasksForDate: (date) => {
-        const state = get();
         const dateStr = date.toISOString().split('T')[0];
-        return state.tasks.filter(
+        return get().tasks.filter(
           (t) => new Date(t.scheduledAt).toISOString().split('T')[0] === dateStr
         );
       },
 
       getTasksForObjective: (objectiveId) => {
-        const state = get();
-        return state.tasks.filter((t) => t.objectiveId === objectiveId);
+        return get().tasks.filter((t) => t.objectiveId === objectiveId);
+      },
+
+      getTodaysTasks: () => {
+        const today = new Date().toISOString().split('T')[0];
+        return get().tasks.filter(
+          (t) => new Date(t.scheduledAt).toISOString().split('T')[0] === today
+        );
+      },
+
+      getInProgressTask: () => {
+        return get().tasks.find((t) => t.status === 'in_progress');
       },
     })),
     {
       name: 'telofy-tasks',
-      storage: createJSONStorage(() => simpleStorage),
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
 
-// Schedule store
+// ============================================
+// SCHEDULE STORE
+// ============================================
+
 interface ScheduleState {
   timeBlocks: TimeBlock[];
   
@@ -180,11 +261,14 @@ interface ScheduleState {
   addTimeBlock: (block: TimeBlock) => void;
   updateTimeBlock: (id: string, updates: Partial<TimeBlock>) => void;
   removeTimeBlock: (id: string) => void;
+  
+  // Getters
+  getAvailableBlocks: (dayOfWeek: number) => TimeBlock[];
 }
 
 export const useScheduleStore = create<ScheduleState>()(
   persist(
-    immer((set) => ({
+    immer((set, get) => ({
       timeBlocks: [],
 
       addTimeBlock: (block) =>
@@ -204,26 +288,39 @@ export const useScheduleStore = create<ScheduleState>()(
         set((state) => {
           state.timeBlocks = state.timeBlocks.filter((b) => b.id !== id);
         }),
+
+      getAvailableBlocks: (dayOfWeek) => {
+        return get().timeBlocks.filter(
+          (b) =>
+            b.type === 'available' &&
+            (!b.isRecurring || b.recurringDays?.includes(dayOfWeek))
+        );
+      },
     })),
     {
       name: 'telofy-schedule',
-      storage: createJSONStorage(() => simpleStorage),
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
 
-// Status store for daily tracking
+// ============================================
+// STATUS STORE
+// ============================================
+
 interface StatusState {
   dailyStatuses: DailyStatus[];
   deviations: Deviation[];
-  currentStatus: ObjectiveStatus;
   
   // Actions
   addDailyStatus: (status: DailyStatus) => void;
   addDeviation: (deviation: Deviation) => void;
   resolveDeviation: (id: string) => void;
-  setCurrentStatus: (status: ObjectiveStatus) => void;
-  getTodayStatus: () => DailyStatus | null;
+  
+  // Getters
+  getTodayStatus: (objectiveId: string) => DailyStatus | undefined;
+  getUnresolvedDeviations: () => Deviation[];
+  getStreakDays: (objectiveId: string) => number;
 }
 
 export const useStatusStore = create<StatusState>()(
@@ -231,7 +328,6 @@ export const useStatusStore = create<StatusState>()(
     immer((set, get) => ({
       dailyStatuses: [],
       deviations: [],
-      currentStatus: 'on_track',
 
       addDailyStatus: (status) =>
         set((state) => {
@@ -241,7 +337,6 @@ export const useStatusStore = create<StatusState>()(
       addDeviation: (deviation) =>
         set((state) => {
           state.deviations.push(deviation);
-          state.currentStatus = 'deviation_detected';
         }),
 
       resolveDeviation: (id) =>
@@ -250,38 +345,59 @@ export const useStatusStore = create<StatusState>()(
           if (index !== -1) {
             state.deviations[index].resolvedAt = new Date();
           }
-          // Check if all deviations are resolved
-          const unresolvedCount = state.deviations.filter(
-            (d) => !d.resolvedAt
-          ).length;
-          if (unresolvedCount === 0) {
-            state.currentStatus = 'on_track';
-          }
         }),
 
-      setCurrentStatus: (status) =>
-        set((state) => {
-          state.currentStatus = status;
-        }),
-
-      getTodayStatus: () => {
-        const state = get();
+      getTodayStatus: (objectiveId) => {
         const today = new Date().toISOString().split('T')[0];
-        return (
-          state.dailyStatuses.find(
-            (s) => new Date(s.date).toISOString().split('T')[0] === today
-          ) ?? null
+        return get().dailyStatuses.find(
+          (s) =>
+            s.objectiveId === objectiveId &&
+            new Date(s.date).toISOString().split('T')[0] === today
         );
+      },
+
+      getUnresolvedDeviations: () => {
+        return get().deviations.filter((d) => !d.resolvedAt);
+      },
+
+      getStreakDays: (objectiveId) => {
+        const statuses = get()
+          .dailyStatuses.filter((s) => s.objectiveId === objectiveId)
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        let streak = 0;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        for (const status of statuses) {
+          const statusDate = new Date(status.date);
+          statusDate.setHours(0, 0, 0, 0);
+
+          const daysDiff = Math.floor(
+            (today.getTime() - statusDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
+
+          if (daysDiff === streak && status.status === 'on_track') {
+            streak++;
+          } else {
+            break;
+          }
+        }
+
+        return streak;
       },
     })),
     {
       name: 'telofy-status',
-      storage: createJSONStorage(() => simpleStorage),
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
 
-// App-wide settings
+// ============================================
+// SETTINGS STORE
+// ============================================
+
 interface SettingsState {
   notificationPreference: NotificationPreference;
   timezone: string;
@@ -291,6 +407,7 @@ interface SettingsState {
   updateNotificationPreference: (pref: Partial<NotificationPreference>) => void;
   setTimezone: (tz: string) => void;
   completeOnboarding: () => void;
+  resetOnboarding: () => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -321,10 +438,70 @@ export const useSettingsStore = create<SettingsState>()(
         set((state) => {
           state.onboardingCompleted = true;
         }),
+
+      resetOnboarding: () =>
+        set((state) => {
+          state.onboardingCompleted = false;
+        }),
     })),
     {
       name: 'telofy-settings',
-      storage: createJSONStorage(() => simpleStorage),
+      storage: createJSONStorage(() => AsyncStorage),
     }
   )
+);
+
+// ============================================
+// ONBOARDING STORE (for objective creation flow)
+// ============================================
+
+interface OnboardingState {
+  step: number;
+  userInput: string;
+  aiAnalysis: any | null;
+  isAnalyzing: boolean;
+  
+  // Actions
+  setStep: (step: number) => void;
+  setUserInput: (input: string) => void;
+  setAIAnalysis: (analysis: any) => void;
+  setIsAnalyzing: (analyzing: boolean) => void;
+  reset: () => void;
+}
+
+export const useOnboardingStore = create<OnboardingState>()(
+  immer((set) => ({
+    step: 0,
+    userInput: '',
+    aiAnalysis: null,
+    isAnalyzing: false,
+
+    setStep: (step) =>
+      set((state) => {
+        state.step = step;
+      }),
+
+    setUserInput: (input) =>
+      set((state) => {
+        state.userInput = input;
+      }),
+
+    setAIAnalysis: (analysis) =>
+      set((state) => {
+        state.aiAnalysis = analysis;
+      }),
+
+    setIsAnalyzing: (analyzing) =>
+      set((state) => {
+        state.isAnalyzing = analyzing;
+      }),
+
+    reset: () =>
+      set((state) => {
+        state.step = 0;
+        state.userInput = '';
+        state.aiAnalysis = null;
+        state.isAnalyzing = false;
+      }),
+  }))
 );
