@@ -127,6 +127,12 @@ export default function SignInScreen() {
                 <Text className="text-telofy-bg font-semibold text-lg">Sign In</Text>
               )}
             </Pressable>
+
+            <Link href="/(auth)/forgot-password" asChild>
+              <Pressable className="mt-4 items-center">
+                <Text className="text-telofy-text-secondary">Forgot password?</Text>
+              </Pressable>
+            </Link>
           </View>
 
           {/* Footer */}

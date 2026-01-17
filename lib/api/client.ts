@@ -95,6 +95,13 @@ class TelofyApiClient {
     });
   }
 
+  async forgotPassword(email: string) {
+    return this.request<{ success: boolean }>('/api/auth/forget-password', {
+      method: 'POST',
+      body: JSON.stringify({ email, redirectTo: 'https://telofy.ai/reset-password' }),
+    });
+  }
+
   async signOut() {
     return this.request<{ success: boolean }>('/api/auth/sign-out', {
       method: 'POST',
