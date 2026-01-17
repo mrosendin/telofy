@@ -96,7 +96,7 @@ class TelofyApiClient {
   }
 
   async forgotPassword(email: string) {
-    return this.request<{ success: boolean }>('/api/auth/forget-password', {
+    return this.request<{ status: boolean; message: string }>('/api/auth/request-password-reset', {
       method: 'POST',
       body: JSON.stringify({ email, redirectTo: 'https://telofy.ai/reset-password' }),
     });
