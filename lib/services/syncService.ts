@@ -298,14 +298,18 @@ async function syncTasks(): Promise<{ errors: string[] }> {
       // Generate new UUID if task ID isn't already a valid UUID
       const taskId = isValidUUID(local.id) ? local.id : generateId();
       
+      // Only send pillarId/ritualId if they're valid UUIDs
+      const pillarId = local.pillarId && isValidUUID(local.pillarId) ? local.pillarId : undefined;
+      const ritualId = local.ritualId && isValidUUID(local.ritualId) ? local.ritualId : undefined;
+      
       console.log(`[SyncService] Uploading task: ${local.title} (id: ${taskId})`);
       
       try {
         await api.createTask({
           id: taskId, // Use valid UUID
           objectiveId: serverObjectiveId, // Use the mapped server objective ID
-          pillarId: local.pillarId,
-          ritualId: local.ritualId,
+          pillarId,
+          ritualId,
           title: local.title,
           description: local.description,
           whyItMatters: local.whyItMatters,
