@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useSettingsStore, useObjectiveStore, useTaskStore, useStatusStore } from '@/lib/store';
+import { useSettingsStore, useObjectiveStore, useTaskStore } from '@/lib/store';
+import * as Notifications from 'expo-notifications';
+import { getScheduledNotificationCount } from '@/lib/services/notificationScheduler';
 
 // Common US timezones + international options
 const TIMEZONES = [
@@ -207,6 +209,36 @@ export default function SettingsScreen() {
             label="Advance Notice"
             value={`${notificationPreference.advanceMinutes} min`}
             onPress={() => setShowAdvanceNoticeModal(true)}
+          />
+          <SettingRow
+            icon="paper-plane"
+            label="Send Test Notification"
+            onPress={async () => {
+              try {
+                await Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: '🎯 Telofy Test',
+                    body: 'Notifications are working correctly!',
+                    sound: true,
+                  },
+                  trigger: {
+                    type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+                    seconds: 2,
+                  },
+                });
+                Alert.alert('Test Sent', 'You should receive a notification in 2 seconds.');
+              } catch (error) {
+                Alert.alert('Error', 'Failed to send test notification. Make sure notifications are enabled in device settings.');
+              }
+            }}
+          />
+          <SettingRow
+            icon="list"
+            label="Scheduled Notifications"
+            onPress={async () => {
+              const count = await getScheduledNotificationCount();
+              Alert.alert('Scheduled Notifications', `You have ${count} notification${count !== 1 ? 's' : ''} scheduled.`);
+            }}
           />
         </View>
 

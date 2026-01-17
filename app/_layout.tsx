@@ -8,6 +8,8 @@ import { StatusBar } from 'expo-status-bar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import 'react-native-reanimated';
 import { useAutoTaskGeneration } from '@/lib/hooks/useAutoTaskGeneration';
+import { useTaskNotifications } from '@/lib/hooks/useTaskNotifications';
+import { useNotifications } from '@/lib/hooks/useNotifications';
 
 import '../global.css';
 
@@ -69,9 +71,11 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-function AutoTaskGenerator() {
-  // This component runs the auto-generation hook
-  useAutoTaskGeneration();
+function AppServices() {
+  // Run app-wide services
+  useAutoTaskGeneration(); // Auto-generate daily tasks
+  useTaskNotifications();  // Schedule push notifications
+  useNotifications();      // Register for push notifications
   return null;
 }
 
@@ -80,7 +84,7 @@ function RootLayoutNav() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={TelofyTheme}>
         <StatusBar style="light" />
-        <AutoTaskGenerator />
+        <AppServices />
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen 
