@@ -80,11 +80,14 @@ function RootLayoutNav() {
             options={{ headerShown: false }} 
           />
           <Stack.Screen 
+            name="objective" 
+            options={{ headerShown: false }} 
+          />
+          <Stack.Screen 
             name="modal" 
             options={{ 
               presentation: 'modal',
-              headerStyle: { backgroundColor: '#141416' },
-              headerTintColor: '#fafafa',
+              headerShown: false,
             }} 
           />
         </Stack>
