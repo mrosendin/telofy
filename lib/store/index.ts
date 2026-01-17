@@ -175,7 +175,9 @@ export const useTaskStore = create<TaskState>()(
 
       addTasks: (tasks) =>
         set((state) => {
+          console.log(`[TaskStore] Adding ${tasks.length} tasks:`, tasks.map(t => t.title));
           state.tasks.push(...tasks);
+          console.log(`[TaskStore] Total tasks now: ${state.tasks.length}`);
         }),
 
       updateTask: (id, updates) =>
@@ -234,9 +236,15 @@ export const useTaskStore = create<TaskState>()(
 
       getTodaysTasks: () => {
         const today = new Date().toISOString().split('T')[0];
-        return get().tasks.filter(
-          (t) => new Date(t.scheduledAt).toISOString().split('T')[0] === today
-        );
+        const allTasks = get().tasks;
+        console.log(`[TaskStore] getTodaysTasks: today=${today}, total tasks=${allTasks.length}`);
+        const todayTasks = allTasks.filter((t) => {
+          const taskDate = new Date(t.scheduledAt).toISOString().split('T')[0];
+          console.log(`[TaskStore] Task "${t.title}" date=${taskDate}, matches=${taskDate === today}`);
+          return taskDate === today;
+        });
+        console.log(`[TaskStore] Found ${todayTasks.length} tasks for today`);
+        return todayTasks;
       },
 
       getInProgressTask: () => {

@@ -92,17 +92,55 @@ export default function ObjectiveDetailScreen() {
   const handleGenerateTasks = async () => {
     setIsGeneratingTasks(true);
     try {
+      console.log('[Telofy] Generating tasks for objective:', objective.name);
       const plan = await generateTaskPlan(objective, [], todaysTasks);
-      const tasks: Task[] = plan.tasks.map((t) => ({
-        ...t,
-        id: generateId(),
-        status: 'pending' as const,
-        scheduledAt: new Date(t.scheduledAt),
-      }));
+      console.log('[Telofy] AI returned plan:', JSON.stringify(plan, null, 2));
+      
+      if (!plan.tasks || plan.tasks.length === 0) {
+        console.warn('[Telofy] AI returned no tasks');
+        alert('No tasks were generated. Please try again.');
+        return;
+      }
+      
+      // Ensure dates are properly set to today
+      const now = new Date();
+      const today = now.toISOString().split('T')[0];
+      
+      const tasks: Task[] = plan.tasks.map((t, index) => {
+        // Parse the AI's scheduled time or create one based on current time
+        let scheduledAt: Date;
+        if (t.scheduledAt) {
+          scheduledAt = new Date(t.scheduledAt);
+          // If AI returned a different date, adjust to today
+          const taskDateStr = scheduledAt.toISOString().split('T')[0];
+          if (taskDateStr !== today) {
+            console.warn(`[Telofy] Task "${t.title}" had date ${taskDateStr}, adjusting to today`);
+            const hours = scheduledAt.getHours();
+            const minutes = scheduledAt.getMinutes();
+            scheduledAt = new Date(now);
+            scheduledAt.setHours(hours, minutes, 0, 0);
+          }
+        } else {
+          // Default to current time + 30min intervals
+          scheduledAt = new Date(now.getTime() + (index + 1) * 30 * 60 * 1000);
+        }
+        
+        console.log(`[Telofy] Task: "${t.title}" scheduled at ${scheduledAt.toISOString()}`);
+        
+        return {
+          ...t,
+          id: generateId(),
+          status: 'pending' as const,
+          scheduledAt,
+        };
+      });
+      
+      console.log(`[Telofy] Adding ${tasks.length} tasks to store`);
       addTasks(tasks);
       router.push('/(tabs)/tasks');
-    } catch (error) {
-      console.error('Failed to generate tasks:', error);
+    } catch (error: any) {
+      console.error('[Telofy] Failed to generate tasks:', error);
+      alert(`Failed to generate tasks: ${error?.message || 'Unknown error'}`);
     } finally {
       setIsGeneratingTasks(false);
     }
