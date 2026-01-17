@@ -8,6 +8,8 @@ import {
   Modal,
   ActivityIndicator,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -458,91 +460,101 @@ export default function ObjectiveDetailScreen() {
 
       {/* Metric Input Modal */}
       <Modal visible={modalType === 'metric'} transparent animationType="slide">
-        <View className="flex-1 bg-black/60 justify-end">
-          <View className="bg-telofy-surface rounded-t-3xl p-6">
-            <Text className="text-telofy-text text-xl font-bold mb-2">
-              Log {selectedMetric?.name}
-            </Text>
-            <Text className="text-telofy-text-secondary mb-6">
-              Enter current value in {selectedMetric?.unit}
-            </Text>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          className="flex-1"
+        >
+          <View className="flex-1 bg-black/60 justify-end">
+            <View className="bg-telofy-surface rounded-t-3xl p-6">
+              <Text className="text-telofy-text text-xl font-bold mb-2">
+                Log {selectedMetric?.name}
+              </Text>
+              <Text className="text-telofy-text-secondary mb-6">
+                Enter current value in {selectedMetric?.unit}
+              </Text>
 
-            <TextInput
-              className="text-telofy-text text-3xl font-bold p-4 rounded-xl bg-telofy-bg border border-telofy-border text-center mb-4"
-              value={inputValue}
-              onChangeText={setInputValue}
-              keyboardType="numeric"
-              autoFocus
-              placeholder="0"
-              placeholderTextColor="#52525b"
-            />
+              <TextInput
+                className="text-telofy-text text-3xl font-bold p-4 rounded-xl bg-telofy-bg border border-telofy-border text-center mb-4"
+                value={inputValue}
+                onChangeText={setInputValue}
+                keyboardType="numeric"
+                autoFocus
+                placeholder="0"
+                placeholderTextColor="#52525b"
+              />
 
-            <TextInput
-              className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
-              value={note}
-              onChangeText={setNote}
-              placeholder="Add a note (optional)"
-              placeholderTextColor="#52525b"
-            />
+              <TextInput
+                className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
+                value={note}
+                onChangeText={setNote}
+                placeholder="Add a note (optional)"
+                placeholderTextColor="#52525b"
+              />
 
-            <View className="flex-row gap-3">
-              <Pressable
-                className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
-                onPress={() => setModalType(null)}
-              >
-                <Text className="text-telofy-text font-semibold">Cancel</Text>
-              </Pressable>
-              <Pressable
-                className="flex-1 rounded-xl py-4 items-center bg-telofy-accent"
-                onPress={submitMetric}
-              >
-                <Text className="text-telofy-bg font-semibold">Save</Text>
-              </Pressable>
+              <View className="flex-row gap-3">
+                <Pressable
+                  className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
+                  onPress={() => setModalType(null)}
+                >
+                  <Text className="text-telofy-text font-semibold">Cancel</Text>
+                </Pressable>
+                <Pressable
+                  className="flex-1 rounded-xl py-4 items-center bg-telofy-accent"
+                  onPress={submitMetric}
+                >
+                  <Text className="text-telofy-bg font-semibold">Save</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* Ritual Completion Modal */}
       <Modal visible={modalType === 'ritual'} transparent animationType="slide">
-        <View className="flex-1 bg-black/60 justify-end">
-          <View className="bg-telofy-surface rounded-t-3xl p-6">
-            <View className="items-center mb-6">
-              <View className="w-20 h-20 rounded-full bg-telofy-accent/20 items-center justify-center mb-4">
-                <FontAwesome name="check" size={40} color="#22c55e" />
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          className="flex-1"
+        >
+          <View className="flex-1 bg-black/60 justify-end">
+            <View className="bg-telofy-surface rounded-t-3xl p-6">
+              <View className="items-center mb-6">
+                <View className="w-20 h-20 rounded-full bg-telofy-accent/20 items-center justify-center mb-4">
+                  <FontAwesome name="check" size={40} color="#22c55e" />
+                </View>
+                <Text className="text-telofy-text text-xl font-bold">
+                  Complete {selectedRitual?.name}?
+                </Text>
+                <Text className="text-telofy-text-secondary mt-1">
+                  Current streak: {selectedRitual?.currentStreak} days
+                </Text>
               </View>
-              <Text className="text-telofy-text text-xl font-bold">
-                Complete {selectedRitual?.name}?
-              </Text>
-              <Text className="text-telofy-text-secondary mt-1">
-                Current streak: {selectedRitual?.currentStreak} days
-              </Text>
-            </View>
 
-            <TextInput
-              className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
-              value={note}
-              onChangeText={setNote}
-              placeholder="Add a note (optional)"
-              placeholderTextColor="#52525b"
-            />
+              <TextInput
+                className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
+                value={note}
+                onChangeText={setNote}
+                placeholder="Add a note (optional)"
+                placeholderTextColor="#52525b"
+              />
 
-            <View className="flex-row gap-3">
-              <Pressable
-                className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
-                onPress={() => setModalType(null)}
-              >
-                <Text className="text-telofy-text font-semibold">Cancel</Text>
-              </Pressable>
-              <Pressable
-                className="flex-1 rounded-xl py-4 items-center bg-telofy-accent"
-                onPress={submitRitual}
-              >
-                <Text className="text-telofy-bg font-semibold">Complete</Text>
-              </Pressable>
+              <View className="flex-row gap-3">
+                <Pressable
+                  className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
+                  onPress={() => setModalType(null)}
+                >
+                  <Text className="text-telofy-text font-semibold">Cancel</Text>
+                </Pressable>
+                <Pressable
+                  className="flex-1 rounded-xl py-4 items-center bg-telofy-accent"
+                  onPress={submitRitual}
+                >
+                  <Text className="text-telofy-bg font-semibold">Complete</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );

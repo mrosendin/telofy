@@ -10,6 +10,8 @@ import {
   Text,
   TextInput,
   View,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -302,38 +304,43 @@ export default function TasksScreen() {
 
       {/* Skip Reason Modal */}
       <Modal visible={showSkipModal} transparent animationType="slide">
-        <View className="flex-1 bg-black/60 justify-end">
-          <View className="bg-telofy-surface rounded-t-3xl p-6">
-            <Text className="text-telofy-text text-xl font-bold mb-2">Skip Task</Text>
-            <Text className="text-telofy-text-secondary mb-4">
-              Why are you skipping "{taskToSkip?.title}"?
-            </Text>
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          className="flex-1"
+        >
+          <View className="flex-1 bg-black/60 justify-end">
+            <View className="bg-telofy-surface rounded-t-3xl p-6">
+              <Text className="text-telofy-text text-xl font-bold mb-2">Skip Task</Text>
+              <Text className="text-telofy-text-secondary mb-4">
+                Why are you skipping "{taskToSkip?.title}"?
+              </Text>
 
-            <TextInput
-              className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
-              value={skipReason}
-              onChangeText={setSkipReason}
-              placeholder="Enter reason (optional)"
-              placeholderTextColor="#52525b"
-              autoFocus
-            />
+              <TextInput
+                className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
+                value={skipReason}
+                onChangeText={setSkipReason}
+                placeholder="Enter reason (optional)"
+                placeholderTextColor="#52525b"
+                autoFocus
+              />
 
-            <View className="flex-row gap-3">
-              <Pressable
-                className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
-                onPress={() => setShowSkipModal(false)}
-              >
-                <Text className="text-telofy-text font-semibold">Cancel</Text>
-              </Pressable>
-              <Pressable
-                className="flex-1 rounded-xl py-4 items-center bg-telofy-error"
-                onPress={confirmSkip}
-              >
-                <Text className="text-white font-semibold">Skip Task</Text>
-              </Pressable>
+              <View className="flex-row gap-3">
+                <Pressable
+                  className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
+                  onPress={() => setShowSkipModal(false)}
+                >
+                  <Text className="text-telofy-text font-semibold">Cancel</Text>
+                </Pressable>
+                <Pressable
+                  className="flex-1 rounded-xl py-4 items-center bg-telofy-error"
+                  onPress={confirmSkip}
+                >
+                  <Text className="text-white font-semibold">Skip Task</Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </SafeAreaView>
   );
