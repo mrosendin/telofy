@@ -6,7 +6,12 @@
 import { api } from '../api/client';
 import { useObjectiveStore, useTaskStore } from '../store';
 import { useAuthStore } from '../hooks/useAuth';
+import { generateId } from '../utils/id';
 import type { Objective, Task } from '../types';
+
+// Helper to check if a string is a valid UUID
+const isValidUUID = (id: string) => 
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
 
 // ============================================
 // SYNC STATUS
@@ -85,10 +90,14 @@ export async function syncAll(): Promise<{ success: boolean; error?: string }> {
 
     if (errors.length > 0) {
       console.warn('[SyncService] Sync completed with errors:', errors);
+      return { 
+        success: false, 
+        error: `${errors.length} item(s) failed to sync. Check console for details.` 
+      };
     } else {
       console.log('[SyncService] Sync completed successfully');
+      return { success: true };
     }
-    return { success: errors.length === 0, error: errors.length > 0 ? errors.join(', ') : undefined };
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Sync failed';
     syncState = {
@@ -136,11 +145,14 @@ async function syncObjectives(): Promise<{ errors: string[] }> {
       continue;
     }
 
-    console.log(`[SyncService] Uploading new objective: ${local.name} (id: ${local.id})`);
+    // Generate new UUID if objective ID isn't already a valid UUID
+    const objectiveId = isValidUUID(local.id) ? local.id : generateId();
+    
+    console.log(`[SyncService] Uploading new objective: ${local.name} (id: ${objectiveId})`);
     
     try {
       const result = await api.createObjective({
-        id: local.id, // Send client-generated ID
+        id: objectiveId, // Use valid UUID
         name: local.name,
         category: local.category,
         description: local.description,
@@ -148,14 +160,14 @@ async function syncObjectives(): Promise<{ errors: string[] }> {
         endDate: local.timeframe.endDate?.toISOString(),
         dailyCommitmentMinutes: local.timeframe.dailyCommitmentMinutes,
         pillars: local.pillars.map((p) => ({
-          id: p.id, // Send client-generated ID
+          id: isValidUUID(p.id) ? p.id : generateId(), // Use valid UUID
           name: p.name,
           description: p.description,
           weight: p.weight,
           progress: p.progress,
         })),
         metrics: local.metrics.map((m) => ({
-          id: m.id, // Send client-generated ID
+          id: isValidUUID(m.id) ? m.id : generateId(), // Use valid UUID
           name: m.name,
           unit: m.unit,
           type: m.type,
@@ -166,7 +178,7 @@ async function syncObjectives(): Promise<{ errors: string[] }> {
           pillarId: m.pillarId,
         })),
         rituals: local.rituals.map((r) => ({
-          id: r.id, // Send client-generated ID
+          id: isValidUUID(r.id) ? r.id : generateId(), // Use valid UUID
           name: r.name,
           description: r.description,
           frequency: r.frequency,
@@ -176,10 +188,10 @@ async function syncObjectives(): Promise<{ errors: string[] }> {
           pillarId: r.pillarId,
         })),
       });
-      // IDs should now match since we send client ID
+      // Map the local ID to the new server ID
       if (result.objective) {
-        idMapping.set(local.id, local.id); // Same ID on both sides
-        console.log(`[SyncService] Synced objective with ID: ${local.id}`);
+        idMapping.set(local.id, objectiveId);
+        console.log(`[SyncService] Synced objective: ${local.id} -> ${objectiveId}`);
       }
     } catch (error) {
       const msg = `Failed to upload objective "${local.name}"`;
@@ -283,12 +295,15 @@ async function syncTasks(): Promise<{ errors: string[] }> {
         continue;
       }
 
-      console.log(`[SyncService] Uploading task: ${local.title} (id: ${local.id})`);
+      // Generate new UUID if task ID isn't already a valid UUID
+      const taskId = isValidUUID(local.id) ? local.id : generateId();
+      
+      console.log(`[SyncService] Uploading task: ${local.title} (id: ${taskId})`);
       
       try {
         await api.createTask({
-          id: local.id, // Send client-generated ID
-          objectiveId: serverObjectiveId, // Use the objective ID (same on both sides now)
+          id: taskId, // Use valid UUID
+          objectiveId: serverObjectiveId, // Use the mapped server objective ID
           pillarId: local.pillarId,
           ritualId: local.ritualId,
           title: local.title,
@@ -308,12 +323,15 @@ async function syncTasks(): Promise<{ errors: string[] }> {
   // Sync task status changes
   for (const local of localTasks) {
     const remote = remoteMap.get(local.id);
-    if (remote && local.status !== remote.status) {
-      console.log(`[SyncService] Syncing task status: ${local.title} -> ${local.status}`);
+    // Map local status to API-compatible status (handle 'overdue' which doesn't exist on server)
+    const apiStatus = local.status === 'overdue' ? 'pending' : local.status;
+    
+    if (remote && apiStatus !== remote.status) {
+      console.log(`[SyncService] Syncing task status: ${local.title} -> ${apiStatus}`);
       
       try {
         await api.updateTask(local.id, {
-          status: local.status,
+          status: apiStatus as 'pending' | 'in_progress' | 'completed' | 'skipped',
           completedAt: local.completedAt?.toISOString(),
           skippedReason: local.skippedReason,
         });

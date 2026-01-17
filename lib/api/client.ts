@@ -313,18 +313,45 @@ export interface Task {
 }
 
 export interface CreateObjectiveData {
+  id?: string; // Optional client-provided UUID
   name: string;
   category: string;
   description?: string;
   targetOutcome?: string;
   endDate?: string;
   dailyCommitmentMinutes?: number;
-  pillars?: Omit<Pillar, 'id' | 'objectiveId'>[];
-  metrics?: Omit<Metric, 'id' | 'objectiveId' | 'entries'>[];
-  rituals?: Omit<Ritual, 'id' | 'objectiveId' | 'currentStreak' | 'longestStreak' | 'completions'>[];
+  pillars?: {
+    id?: string;
+    name: string;
+    description?: string;
+    weight: number;
+    progress?: number;
+  }[];
+  metrics?: {
+    id?: string;
+    name: string;
+    unit: string;
+    type: 'number' | 'boolean' | 'duration' | 'rating';
+    target?: number;
+    targetDirection?: 'increase' | 'decrease' | 'maintain';
+    current?: number;
+    source?: string;
+    pillarId?: string;
+  }[];
+  rituals?: {
+    id?: string;
+    name: string;
+    description?: string;
+    frequency: 'daily' | 'weekly' | 'monthly';
+    daysOfWeek?: number[];
+    timesPerPeriod: number;
+    estimatedMinutes?: number;
+    pillarId?: string;
+  }[];
 }
 
 export interface CreateTaskData {
+  id?: string; // Optional client-provided UUID
   objectiveId: string;
   pillarId?: string;
   ritualId?: string;
