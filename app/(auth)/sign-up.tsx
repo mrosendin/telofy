@@ -69,7 +69,7 @@ export default function SignUpScreen() {
                 className="text-telofy-accent text-5xl tracking-tight"
                 style={{ fontStyle: 'italic', fontWeight: '300' }}
               >
-                telofy
+                goalmax
               </Text>
               <Text className="text-telofy-text-secondary mt-2 text-sm tracking-widest uppercase">
                 Turn intention into execution

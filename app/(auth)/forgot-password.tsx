@@ -77,7 +77,7 @@ export default function ForgotPasswordScreen() {
               className="text-telofy-accent text-5xl tracking-tight"
               style={{ fontStyle: 'italic', fontWeight: '300' }}
             >
-              telofy
+              goalmax
             </Text>
           </View>
 

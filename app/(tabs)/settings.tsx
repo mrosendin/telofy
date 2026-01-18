@@ -181,10 +181,10 @@ export default function SettingsScreen() {
             const AsyncStorage = require('@react-native-async-storage/async-storage').default;
             try {
               await AsyncStorage.multiRemove([
-                'telofy-objectives',
-                'telofy-tasks',
-                'telofy-status',
-                'telofy-settings',
+                'goalmax-objectives',
+                'goalmax-tasks',
+                'goalmax-status',
+                'goalmax-settings',
               ]);
               Alert.alert('Data Cleared', 'All data has been cleared. Please restart the app.');
             } catch (error) {
@@ -349,7 +349,7 @@ export default function SettingsScreen() {
               try {
                 await Notifications.scheduleNotificationAsync({
                   content: {
-                    title: '🎯 Telofy Test',
+                    title: '🎯 Goalmax Test',
                     body: 'Notifications are working correctly!',
                     sound: true,
                   },
@@ -436,7 +436,7 @@ export default function SettingsScreen() {
 
         {/* Footer */}
         <View className="items-center pb-8">
-          <Text className="text-telofy-muted text-sm font-semibold">TELOFY</Text>
+          <Text className="text-telofy-muted text-sm font-semibold">GOALMAX</Text>
           <Text className="text-telofy-muted text-xs mt-1">
             Turn intention into execution.
           </Text>

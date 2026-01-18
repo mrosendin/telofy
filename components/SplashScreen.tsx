@@ -83,7 +83,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
           },
         ]}
       >
-        <Text style={styles.title}>telofy</Text>
+        <Text style={styles.title}>goalmax</Text>
         <Text style={styles.tagline}>Turn intention into execution</Text>
       </Animated.View>
 

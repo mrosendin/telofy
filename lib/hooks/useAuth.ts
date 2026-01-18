@@ -86,7 +86,7 @@ export const useAuthStore = create<AuthState>()(
         }),
     })),
     {
-      name: 'telofy-auth',
+      name: 'goalmax-auth',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
         user: state.user,

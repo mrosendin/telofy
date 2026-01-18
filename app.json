@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "Telofy",
-    "slug": "telofy",
+    "name": "Goalmax",
+    "slug": "goalmax",
     "owner": "mrosendin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "telofy",
+    "scheme": "goalmax",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
@@ -16,10 +16,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "ai.telofy.app",
+      "bundleIdentifier": "ai.goalmax.app",
       "associatedDomains": [
-        "applinks:telofy.ai",
-        "webcredentials:telofy.ai"
+        "applinks:goalmax.ai",
+        "webcredentials:goalmax.ai"
       ],
       "infoPlist": {
         "UIBackgroundModes": [
@@ -35,7 +35,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "ai.telofy.app"
+      "package": "ai.goalmax.app"
     },
     "web": {
       "bundler": "metro",
@@ -70,7 +70,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "0593bc33-5ae0-43cb-a1cb-16e549a632ca"
+        "projectId": ""
       }
     }
   }

@@ -135,7 +135,7 @@ export const useObjectiveStore = create<ObjectiveState>()(
       },
     })),
     {
-      name: 'telofy-objectives',
+      name: 'goalmax-objectives',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )
@@ -252,7 +252,7 @@ export const useTaskStore = create<TaskState>()(
       },
     })),
     {
-      name: 'telofy-tasks',
+      name: 'goalmax-tasks',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )
@@ -306,7 +306,7 @@ export const useScheduleStore = create<ScheduleState>()(
       },
     })),
     {
-      name: 'telofy-schedule',
+      name: 'goalmax-schedule',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )
@@ -396,7 +396,7 @@ export const useStatusStore = create<StatusState>()(
       },
     })),
     {
-      name: 'telofy-status',
+      name: 'goalmax-status',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )
@@ -453,7 +453,7 @@ export const useSettingsStore = create<SettingsState>()(
         }),
     })),
     {
-      name: 'telofy-settings',
+      name: 'goalmax-settings',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )

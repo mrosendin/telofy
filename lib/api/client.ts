@@ -98,7 +98,7 @@ class TelofyApiClient {
   async forgotPassword(email: string) {
     return this.request<{ status: boolean; message: string }>('/api/auth/request-password-reset', {
       method: 'POST',
-      body: JSON.stringify({ email, redirectTo: 'https://telofy.ai/reset-password' }),
+      body: JSON.stringify({ email, redirectTo: 'https://goalmax.ai/reset-password' }),
     });
   }
 
