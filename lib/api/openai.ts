@@ -11,10 +11,19 @@ import type {
   Task
 } from '../types';
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
-});
+// Initialize OpenAI client lazily to prevent crashes if API key is missing
+let openaiClient: OpenAI | null = null;
+
+function getOpenAIClient(): OpenAI {
+  if (!openaiClient) {
+    const apiKey = process.env.EXPO_PUBLIC_OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OpenAI API key not configured. Please set EXPO_PUBLIC_OPENAI_API_KEY.');
+    }
+    openaiClient = new OpenAI({ apiKey });
+  }
+  return openaiClient;
+}
 
 /**
  * Custom error for rate limiting
@@ -169,7 +178,7 @@ Respond in JSON:
 }`;
 
   const response = await withRetry(() =>
-    openai.chat.completions.create({
+    getOpenAIClient().chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -210,7 +219,7 @@ ${JSON.stringify(previousAnalysis, null, 2)}
 Provide an updated analysis in the same JSON format, but with no clarifyingQuestions this time.`;
 
   const response = await withRetry(() =>
-    openai.chat.completions.create({
+    getOpenAIClient().chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -307,7 +316,7 @@ Respond in JSON:
 }`;
 
   const response = await withRetry(() =>
-    openai.chat.completions.create({
+    getOpenAIClient().chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -357,7 +366,7 @@ Provide a brief, actionable response (max 100 words):
 Sound like a system reporting status, not a coach lecturing.`;
 
   const response = await withRetry(() =>
-    openai.chat.completions.create({
+    getOpenAIClient().chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -401,7 +410,7 @@ ${skippedTasks.map((t) => `- ${t.title}${t.skippedReason ? ` (${t.skippedReason}
 Be factual. Note progress. If there are concerns, mention them briefly. Sound like a system status report.`;
 
   const response = await withRetry(() =>
-    openai.chat.completions.create({
+    getOpenAIClient().chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
@@ -432,7 +441,7 @@ Context: ${task.whyItMatters || 'Part of their daily execution'}
 Write a brief (max 30 words) intervention. Not motivational fluff - remind them factually why this matters and what's at stake. Be direct but not harsh.`;
 
   const response = await withRetry(() =>
-    openai.chat.completions.create({
+    getOpenAIClient().chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
