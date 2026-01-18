@@ -1,7 +1,7 @@
 /**
- * goalmax API Client
+ * Goalmax API Client
  * 
- * Handles communication with the goalmax backend API.
+ * Handles communication with the Goalmax backend API.
  * Configure API_URL in your environment.
  */
 

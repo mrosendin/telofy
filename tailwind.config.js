@@ -9,8 +9,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Telofy brand colors - dark, serious, system-like
-        telofy: {
+        // Goalmax brand colors - dark, serious, system-like
+        goalmax: {
           bg: '#0a0a0b',
           surface: '#141416',
           border: '#27272a',

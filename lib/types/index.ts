@@ -1,5 +1,5 @@
 /**
- * Core types for the goalmax execution system
+ * Core types for the Goalmax execution system
  * Supports multiple simultaneous objectives with rich tracking
  */
 

@@ -36,14 +36,14 @@ function TaskCard({ task, onComplete, onSkip, onStart }: {
     <View
       className={`rounded-2xl p-5 mb-4 border ${
         isInProgress
-          ? 'bg-telofy-accent/10 border-telofy-accent'
+          ? 'bg-goalmax-accent/10 border-goalmax-accent'
           : isCompleted
-          ? 'bg-telofy-surface/50 border-telofy-border'
+          ? 'bg-goalmax-surface/50 border-goalmax-border'
           : isSkipped
-          ? 'bg-telofy-surface/30 border-telofy-border'
+          ? 'bg-goalmax-surface/30 border-goalmax-border'
           : isOverdue
-          ? 'bg-telofy-error/10 border-telofy-error/50'
-          : 'bg-telofy-surface border-telofy-border'
+          ? 'bg-goalmax-error/10 border-goalmax-error/50'
+          : 'bg-goalmax-surface border-goalmax-border'
       }`}
     >
       {/* Header */}
@@ -57,25 +57,25 @@ function TaskCard({ task, onComplete, onSkip, onStart }: {
           </View>
         )}
         <View className="flex-1">
-          <Text className="text-telofy-text-secondary text-xs">
+          <Text className="text-goalmax-text-secondary text-xs">
             {objective?.name ?? 'Task'}
           </Text>
           <Text
             className={`text-lg font-bold ${
-              isCompleted || isSkipped ? 'text-telofy-text-secondary line-through' : 'text-telofy-text'
+              isCompleted || isSkipped ? 'text-goalmax-text-secondary line-through' : 'text-goalmax-text'
             }`}
           >
             {task.title}
           </Text>
         </View>
         {isInProgress && (
-          <View className="bg-telofy-accent px-2 py-1 rounded">
-            <Text className="text-telofy-bg text-xs font-semibold">IN PROGRESS</Text>
+          <View className="bg-goalmax-accent px-2 py-1 rounded">
+            <Text className="text-goalmax-bg text-xs font-semibold">IN PROGRESS</Text>
           </View>
         )}
         {isOverdue && !isInProgress && (
-          <View className="bg-telofy-error/20 px-2 py-1 rounded">
-            <Text className="text-telofy-error text-xs font-semibold">OVERDUE</Text>
+          <View className="bg-goalmax-error/20 px-2 py-1 rounded">
+            <Text className="text-goalmax-error text-xs font-semibold">OVERDUE</Text>
           </View>
         )}
       </View>
@@ -83,14 +83,14 @@ function TaskCard({ task, onComplete, onSkip, onStart }: {
       {/* Time & Duration */}
       <View className="flex-row items-center mb-3">
         <FontAwesome name="clock-o" size={14} color="#71717a" />
-        <Text className="text-telofy-text-secondary ml-2">{timeStr}</Text>
-        <Text className="text-telofy-text-secondary mx-2">•</Text>
-        <Text className="text-telofy-text-secondary">{task.durationMinutes} min</Text>
+        <Text className="text-goalmax-text-secondary ml-2">{timeStr}</Text>
+        <Text className="text-goalmax-text-secondary mx-2">•</Text>
+        <Text className="text-goalmax-text-secondary">{task.durationMinutes} min</Text>
       </View>
 
       {/* Why it matters */}
       {task.whyItMatters && (
-        <Text className="text-telofy-text-secondary text-sm italic mb-4">
+        <Text className="text-goalmax-text-secondary text-sm italic mb-4">
           "{task.whyItMatters}"
         </Text>
       )}
@@ -100,24 +100,24 @@ function TaskCard({ task, onComplete, onSkip, onStart }: {
         <View className="flex-row gap-3">
           {!isInProgress ? (
             <Pressable
-              className="flex-1 bg-telofy-accent rounded-xl py-3 items-center active:opacity-80"
+              className="flex-1 bg-goalmax-accent rounded-xl py-3 items-center active:opacity-80"
               onPress={onStart}
             >
-              <Text className="text-telofy-bg font-semibold">Start</Text>
+              <Text className="text-goalmax-bg font-semibold">Start</Text>
             </Pressable>
           ) : (
             <Pressable
-              className="flex-1 bg-telofy-accent rounded-xl py-3 items-center active:opacity-80"
+              className="flex-1 bg-goalmax-accent rounded-xl py-3 items-center active:opacity-80"
               onPress={onComplete}
             >
-              <Text className="text-telofy-bg font-semibold">Complete</Text>
+              <Text className="text-goalmax-bg font-semibold">Complete</Text>
             </Pressable>
           )}
           <Pressable
-            className="flex-1 bg-telofy-bg rounded-xl py-3 items-center border border-telofy-border active:opacity-80"
+            className="flex-1 bg-goalmax-bg rounded-xl py-3 items-center border border-goalmax-border active:opacity-80"
             onPress={onSkip}
           >
-            <Text className="text-telofy-text font-semibold">Skip</Text>
+            <Text className="text-goalmax-text font-semibold">Skip</Text>
           </Pressable>
         </View>
       )}
@@ -126,13 +126,13 @@ function TaskCard({ task, onComplete, onSkip, onStart }: {
       {isCompleted && (
         <View className="flex-row items-center">
           <FontAwesome name="check-circle" size={16} color="#22c55e" />
-          <Text className="text-telofy-accent ml-2">Completed</Text>
+          <Text className="text-goalmax-accent ml-2">Completed</Text>
         </View>
       )}
       {isSkipped && (
         <View className="flex-row items-center">
           <FontAwesome name="times-circle" size={16} color="#52525b" />
-          <Text className="text-telofy-muted ml-2">
+          <Text className="text-goalmax-muted ml-2">
             Skipped{task.skippedReason ? `: ${task.skippedReason}` : ''}
           </Text>
         </View>
@@ -144,13 +144,13 @@ function TaskCard({ task, onComplete, onSkip, onStart }: {
 function EmptyState() {
   return (
     <View className="items-center py-16 px-8">
-      <View className="w-24 h-24 rounded-full bg-telofy-surface items-center justify-center mb-6">
+      <View className="w-24 h-24 rounded-full bg-goalmax-surface items-center justify-center mb-6">
         <FontAwesome name="tasks" size={40} color="#22c55e" />
       </View>
-      <Text className="text-telofy-text text-2xl font-bold text-center mb-3">
+      <Text className="text-goalmax-text text-2xl font-bold text-center mb-3">
         No tasks scheduled
       </Text>
-      <Text className="text-telofy-text-secondary text-center">
+      <Text className="text-goalmax-text-secondary text-center">
         Go to an objective and tap "Generate Today's Tasks" to create your execution plan for the day.
       </Text>
     </View>
@@ -200,29 +200,29 @@ export default function TasksScreen() {
 
   if (todaysTasks.length === 0) {
     return (
-      <SafeAreaView className="flex-1 bg-telofy-bg" edges={['bottom']}>
+      <SafeAreaView className="flex-1 bg-goalmax-bg" edges={['bottom']}>
         <EmptyState />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-telofy-bg" edges={['bottom']}>
+    <SafeAreaView className="flex-1 bg-goalmax-bg" edges={['bottom']}>
       <ScrollView className="flex-1 px-5 pt-4">
         {/* Summary */}
-        <View className="rounded-2xl p-5 bg-telofy-surface border border-telofy-border mb-6">
-          <Text className="text-telofy-text-secondary text-sm mb-3 tracking-wide">TODAY'S EXECUTION</Text>
+        <View className="rounded-2xl p-5 bg-goalmax-surface border border-goalmax-border mb-6">
+          <Text className="text-goalmax-text-secondary text-sm mb-3 tracking-wide">TODAY'S EXECUTION</Text>
           <View className="flex-row items-center">
             <View className="flex-1">
-              <Text className="text-telofy-text text-3xl font-bold">
+              <Text className="text-goalmax-text text-3xl font-bold">
                 {completedCount}/{todaysTasks.length}
               </Text>
-              <Text className="text-telofy-text-secondary">tasks completed</Text>
+              <Text className="text-goalmax-text-secondary">tasks completed</Text>
             </View>
             <View className="w-20 h-20">
-              <View className="absolute inset-0 rounded-full border-4 border-telofy-border" />
+              <View className="absolute inset-0 rounded-full border-4 border-goalmax-border" />
               <View
-                className="absolute inset-0 rounded-full border-4 border-telofy-accent"
+                className="absolute inset-0 rounded-full border-4 border-goalmax-accent"
                 style={{
                   transform: [{ rotate: '-90deg' }],
                   borderTopColor: 'transparent',
@@ -231,7 +231,7 @@ export default function TasksScreen() {
                 }}
               />
               <View className="absolute inset-0 items-center justify-center">
-                <Text className="text-telofy-text font-bold">
+                <Text className="text-goalmax-text font-bold">
                   {todaysTasks.length > 0 ? Math.round((completedCount / todaysTasks.length) * 100) : 0}%
                 </Text>
               </View>
@@ -242,7 +242,7 @@ export default function TasksScreen() {
         {/* Pending Tasks */}
         {pendingCount > 0 && (
           <>
-            <Text className="text-telofy-text-secondary text-sm mb-3 tracking-wide">
+            <Text className="text-goalmax-text-secondary text-sm mb-3 tracking-wide">
               PENDING ({pendingCount})
             </Text>
             {sortedTasks
@@ -262,7 +262,7 @@ export default function TasksScreen() {
         {/* Completed Tasks */}
         {completedCount > 0 && (
           <>
-            <Text className="text-telofy-text-secondary text-sm mb-3 mt-4 tracking-wide">
+            <Text className="text-goalmax-text-secondary text-sm mb-3 mt-4 tracking-wide">
               COMPLETED ({completedCount})
             </Text>
             {sortedTasks
@@ -282,7 +282,7 @@ export default function TasksScreen() {
         {/* Skipped Tasks */}
         {sortedTasks.some((t) => t.status === 'skipped') && (
           <>
-            <Text className="text-telofy-text-secondary text-sm mb-3 mt-4 tracking-wide">
+            <Text className="text-goalmax-text-secondary text-sm mb-3 mt-4 tracking-wide">
               SKIPPED
             </Text>
             {sortedTasks
@@ -309,14 +309,14 @@ export default function TasksScreen() {
           className="flex-1"
         >
           <View className="flex-1 bg-black/60 justify-end">
-            <View className="bg-telofy-surface rounded-t-3xl p-6">
-              <Text className="text-telofy-text text-xl font-bold mb-2">Skip Task</Text>
-              <Text className="text-telofy-text-secondary mb-4">
+            <View className="bg-goalmax-surface rounded-t-3xl p-6">
+              <Text className="text-goalmax-text text-xl font-bold mb-2">Skip Task</Text>
+              <Text className="text-goalmax-text-secondary mb-4">
                 Why are you skipping "{taskToSkip?.title}"?
               </Text>
 
               <TextInput
-                className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
+                className="text-goalmax-text p-4 rounded-xl bg-goalmax-bg border border-goalmax-border mb-6"
                 style={{ textAlignVertical: 'center' }}
                 value={skipReason}
                 onChangeText={setSkipReason}
@@ -327,13 +327,13 @@ export default function TasksScreen() {
 
               <View className="flex-row gap-3">
                 <Pressable
-                  className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
+                  className="flex-1 rounded-xl py-4 items-center bg-goalmax-bg border border-goalmax-border"
                   onPress={() => setShowSkipModal(false)}
                 >
-                  <Text className="text-telofy-text font-semibold">Cancel</Text>
+                  <Text className="text-goalmax-text font-semibold">Cancel</Text>
                 </Pressable>
                 <Pressable
-                  className="flex-1 rounded-xl py-4 items-center bg-telofy-error"
+                  className="flex-1 rounded-xl py-4 items-center bg-goalmax-error"
                   onPress={confirmSkip}
                 >
                   <Text className="text-white font-semibold">Skip Task</Text>

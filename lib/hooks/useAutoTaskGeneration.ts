@@ -10,7 +10,7 @@ import { generateId } from '../utils/id';
 import { isToday } from '../utils/date';
 import type { Task } from '../types';
 
-const LAST_GENERATION_KEY = 'telofy:lastTaskGeneration';
+const LAST_GENERATION_KEY = 'goalmax:lastTaskGeneration';
 
 export function useAutoTaskGeneration() {
   const objectives = useObjectiveStore((s) => s.objectives);
@@ -24,7 +24,7 @@ export function useAutoTaskGeneration() {
     nextSlot.setMinutes(Math.ceil(nextSlot.getMinutes() / 15) * 15, 0, 0);
 
     try {
-      console.log(`[goalmax Auto] Generating tasks for: ${objective.name}`);
+      console.log(`[Goalmax Auto] Generating tasks for: ${objective.name}`);
       
       // Get existing tasks for today for this objective
       const existingTodayTasks = tasks.filter(
@@ -34,7 +34,7 @@ export function useAutoTaskGeneration() {
       const plan = await generateTaskPlan(objective, [], existingTodayTasks);
 
       if (!plan.tasks || plan.tasks.length === 0) {
-        console.log(`[goalmax Auto] No tasks generated for ${objective.name}`);
+        console.log(`[Goalmax Auto] No tasks generated for ${objective.name}`);
         return [];
       }
 
@@ -58,10 +58,10 @@ export function useAutoTaskGeneration() {
         };
       });
 
-      console.log(`[goalmax Auto] Generated ${newTasks.length} tasks for ${objective.name}`);
+      console.log(`[Goalmax Auto] Generated ${newTasks.length} tasks for ${objective.name}`);
       return newTasks;
     } catch (error) {
-      console.error(`[goalmax Auto] Failed to generate tasks for ${objective.name}:`, error);
+      console.error(`[Goalmax Auto] Failed to generate tasks for ${objective.name}:`, error);
       return [];
     }
   }, [tasks]);
@@ -71,7 +71,7 @@ export function useAutoTaskGeneration() {
     
     const activeObjectives = objectives.filter((o) => !o.isPaused);
     if (activeObjectives.length === 0) {
-      console.log('[goalmax Auto] No active objectives, skipping');
+      console.log('[Goalmax Auto] No active objectives, skipping');
       return;
     }
 
@@ -80,7 +80,7 @@ export function useAutoTaskGeneration() {
     if (lastGenStr) {
       const lastGen = new Date(lastGenStr);
       if (isToday(lastGen)) {
-        console.log('[goalmax Auto] Already generated tasks today, skipping');
+        console.log('[Goalmax Auto] Already generated tasks today, skipping');
         return;
       }
     }
@@ -88,7 +88,7 @@ export function useAutoTaskGeneration() {
     // Check if we already have tasks for today
     const todaysTasks = tasks.filter((t) => isToday(new Date(t.scheduledAt)));
     if (todaysTasks.length > 0) {
-      console.log(`[goalmax Auto] Already have ${todaysTasks.length} tasks for today, marking as generated`);
+      console.log(`[Goalmax Auto] Already have ${todaysTasks.length} tasks for today, marking as generated`);
       await AsyncStorage.setItem(LAST_GENERATION_KEY, new Date().toISOString());
       return;
     }
@@ -96,12 +96,12 @@ export function useAutoTaskGeneration() {
     // It's too late to generate tasks (after 9 PM)
     const hour = new Date().getHours();
     if (hour >= 21) {
-      console.log('[goalmax Auto] Too late to generate tasks (after 9 PM)');
+      console.log('[Goalmax Auto] Too late to generate tasks (after 9 PM)');
       return;
     }
 
     isGenerating.current = true;
-    console.log('[goalmax Auto] Starting auto-generation for', activeObjectives.length, 'objectives');
+    console.log('[Goalmax Auto] Starting auto-generation for', activeObjectives.length, 'objectives');
 
     try {
       const allNewTasks: Task[] = [];
@@ -113,7 +113,7 @@ export function useAutoTaskGeneration() {
 
       if (allNewTasks.length > 0) {
         addTasks(allNewTasks);
-        console.log(`[goalmax Auto] Added ${allNewTasks.length} total tasks`);
+        console.log(`[Goalmax Auto] Added ${allNewTasks.length} total tasks`);
       }
 
       await AsyncStorage.setItem(LAST_GENERATION_KEY, new Date().toISOString());

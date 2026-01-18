@@ -36,7 +36,7 @@ export default function TabLayout() {
         options={{
           title: 'Status',
           tabBarIcon: ({ color }) => <TabBarIcon name="dashboard" color={color} />,
-          headerTitle: 'goalmax',
+          headerTitle: 'Goalmax',
         }}
       />
       <Tabs.Screen

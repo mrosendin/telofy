@@ -1,5 +1,5 @@
 /**
- * Zustand stores for goalmax state management
+ * Zustand stores for Goalmax state management
  * Using AsyncStorage for Expo Go compatibility
  */
 

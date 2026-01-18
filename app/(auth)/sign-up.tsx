@@ -56,7 +56,7 @@ export default function SignUpScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-telofy-bg">
+    <SafeAreaView className="flex-1 bg-goalmax-bg">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
@@ -66,32 +66,32 @@ export default function SignUpScreen() {
             {/* Header */}
             <View className="items-center mb-8">
               <Text 
-                className="text-telofy-accent text-5xl tracking-tight"
+                className="text-goalmax-accent text-5xl tracking-tight"
                 style={{ fontStyle: 'italic', fontWeight: '300' }}
               >
-                goalmax
+                Goalmax
               </Text>
-              <Text className="text-telofy-text-secondary mt-2 text-sm tracking-widest uppercase">
+              <Text className="text-goalmax-text-secondary mt-2 text-sm tracking-widest uppercase">
                 Turn intention into execution
               </Text>
             </View>
 
             {/* Form */}
             <View className="mb-8">
-              <Text className="text-telofy-text text-2xl font-bold mb-6">
+              <Text className="text-goalmax-text text-2xl font-bold mb-6">
                 Create Account
               </Text>
 
               {error && (
-                <View className="bg-telofy-error/20 border border-telofy-error rounded-xl p-4 mb-6">
-                  <Text className="text-telofy-error text-center">{error}</Text>
+                <View className="bg-goalmax-error/20 border border-goalmax-error rounded-xl p-4 mb-6">
+                  <Text className="text-goalmax-error text-center">{error}</Text>
                 </View>
               )}
 
               <View className="mb-4">
-                <Text className="text-telofy-text-secondary text-sm mb-2">Name</Text>
+                <Text className="text-goalmax-text-secondary text-sm mb-2">Name</Text>
                 <TextInput
-                  className="text-telofy-text p-4 rounded-xl bg-telofy-surface border border-telofy-border"
+                  className="text-goalmax-text p-4 rounded-xl bg-goalmax-surface border border-goalmax-border"
                   style={{ textAlignVertical: 'center' }}
                   placeholder="John Doe"
                   placeholderTextColor="#52525b"
@@ -104,9 +104,9 @@ export default function SignUpScreen() {
               </View>
 
               <View className="mb-4">
-                <Text className="text-telofy-text-secondary text-sm mb-2">Email</Text>
+                <Text className="text-goalmax-text-secondary text-sm mb-2">Email</Text>
                 <TextInput
-                  className="text-telofy-text p-4 rounded-xl bg-telofy-surface border border-telofy-border"
+                  className="text-goalmax-text p-4 rounded-xl bg-goalmax-surface border border-goalmax-border"
                   style={{ textAlignVertical: 'center' }}
                   placeholder="you@example.com"
                   placeholderTextColor="#52525b"
@@ -121,10 +121,10 @@ export default function SignUpScreen() {
               </View>
 
               <View className="mb-4">
-                <Text className="text-telofy-text-secondary text-sm mb-2">Password</Text>
+                <Text className="text-goalmax-text-secondary text-sm mb-2">Password</Text>
                 <View className="relative">
                   <TextInput
-                    className="text-telofy-text p-4 pr-12 rounded-xl bg-telofy-surface border border-telofy-border"
+                    className="text-goalmax-text p-4 pr-12 rounded-xl bg-goalmax-surface border border-goalmax-border"
                     style={{ textAlignVertical: 'center' }}
                     placeholder="Min 8 characters"
                     placeholderTextColor="#52525b"
@@ -149,11 +149,11 @@ export default function SignUpScreen() {
               </View>
 
               <View className="mb-6">
-                <Text className="text-telofy-text-secondary text-sm mb-2">
+                <Text className="text-goalmax-text-secondary text-sm mb-2">
                   Confirm Password
                 </Text>
                 <TextInput
-                  className="text-telofy-text p-4 rounded-xl bg-telofy-surface border border-telofy-border"
+                  className="text-goalmax-text p-4 rounded-xl bg-goalmax-surface border border-goalmax-border"
                   style={{ textAlignVertical: 'center' }}
                   placeholder="••••••••"
                   placeholderTextColor="#52525b"
@@ -168,7 +168,7 @@ export default function SignUpScreen() {
 
               <Pressable
                 className={`rounded-xl py-4 items-center ${
-                  isLoading ? 'bg-telofy-accent/50' : 'bg-telofy-accent'
+                  isLoading ? 'bg-goalmax-accent/50' : 'bg-goalmax-accent'
                 }`}
                 onPress={handleSignUp}
                 disabled={isLoading}
@@ -176,7 +176,7 @@ export default function SignUpScreen() {
                 {isLoading ? (
                   <ActivityIndicator color="#0a0a0b" />
                 ) : (
-                  <Text className="text-telofy-bg font-semibold text-lg">
+                  <Text className="text-goalmax-bg font-semibold text-lg">
                     Create Account
                   </Text>
                 )}
@@ -185,10 +185,10 @@ export default function SignUpScreen() {
 
             {/* Footer */}
             <View className="items-center">
-              <Text className="text-telofy-text-secondary">
+              <Text className="text-goalmax-text-secondary">
                 Already have an account?{' '}
                 <Link href="/(auth)/sign-in" asChild>
-                  <Text className="text-telofy-accent font-semibold">Sign In</Text>
+                  <Text className="text-goalmax-accent font-semibold">Sign In</Text>
                 </Link>
               </Text>
             </View>
@@ -196,7 +196,7 @@ export default function SignUpScreen() {
             {/* Skip for now */}
             <View className="items-center mt-6 pb-8">
               <Pressable onPress={() => router.replace('/(tabs)')}>
-                <Text className="text-telofy-muted text-sm">
+                <Text className="text-goalmax-muted text-sm">
                   Continue without account →
                 </Text>
               </Pressable>

@@ -69,14 +69,14 @@ function SettingRow({
 }: SettingRowProps) {
   return (
     <Pressable
-      className="flex-row items-center py-4 border-b border-telofy-border active:opacity-80"
+      className="flex-row items-center py-4 border-b border-goalmax-border active:opacity-80"
       onPress={onPress}
       disabled={hasSwitch}
     >
-      <View className={`w-9 h-9 rounded-lg items-center justify-center ${danger ? 'bg-telofy-error/20' : 'bg-telofy-bg'}`}>
+      <View className={`w-9 h-9 rounded-lg items-center justify-center ${danger ? 'bg-goalmax-error/20' : 'bg-goalmax-bg'}`}>
         <FontAwesome name={icon} size={16} color={danger ? '#ef4444' : '#52525b'} />
       </View>
-      <Text className={`flex-1 ml-4 text-base ${danger ? 'text-telofy-error' : 'text-telofy-text'}`}>{label}</Text>
+      <Text className={`flex-1 ml-4 text-base ${danger ? 'text-goalmax-error' : 'text-goalmax-text'}`}>{label}</Text>
       {hasSwitch ? (
         <Switch
           value={switchValue}
@@ -85,7 +85,7 @@ function SettingRow({
           thumbColor="#fafafa"
         />
       ) : value ? (
-        <Text className="text-telofy-text-secondary mr-2">{value}</Text>
+        <Text className="text-goalmax-text-secondary mr-2">{value}</Text>
       ) : null}
       {!hasSwitch && onPress && (
         <FontAwesome name="chevron-right" size={14} color="#52525b" />
@@ -204,12 +204,12 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-telofy-bg" edges={['bottom']}>
+    <SafeAreaView className="flex-1 bg-goalmax-bg" edges={['bottom']}>
       <ScrollView className="flex-1 px-5 pt-4">
         {/* Account Section */}
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 p-4">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 p-4">
           <View className="flex-row items-center">
-            <View className="w-14 h-14 rounded-full bg-telofy-bg items-center justify-center">
+            <View className="w-14 h-14 rounded-full bg-goalmax-bg items-center justify-center">
               <FontAwesome 
                 name={isAuthenticated ? 'user-circle' : 'user'} 
                 size={28} 
@@ -219,13 +219,13 @@ export default function SettingsScreen() {
             <View className="flex-1 ml-4">
               {isAuthenticated ? (
                 <>
-                  <Text className="text-telofy-text font-semibold">{user?.name}</Text>
-                  <Text className="text-telofy-text-secondary text-sm">{user?.email}</Text>
+                  <Text className="text-goalmax-text font-semibold">{user?.name}</Text>
+                  <Text className="text-goalmax-text-secondary text-sm">{user?.email}</Text>
                 </>
               ) : (
                 <>
-                  <Text className="text-telofy-text font-semibold">Not Signed In</Text>
-                  <Text className="text-telofy-text-secondary text-sm">
+                  <Text className="text-goalmax-text font-semibold">Not Signed In</Text>
+                  <Text className="text-goalmax-text-secondary text-sm">
                     Sign in to sync across devices
                   </Text>
                 </>
@@ -233,24 +233,24 @@ export default function SettingsScreen() {
             </View>
             {isAuthenticated ? (
               <Pressable
-                className="bg-telofy-bg px-4 py-2 rounded-lg"
+                className="bg-goalmax-bg px-4 py-2 rounded-lg"
                 onPress={handleSignOut}
               >
-                <Text className="text-telofy-text-secondary text-sm">Sign Out</Text>
+                <Text className="text-goalmax-text-secondary text-sm">Sign Out</Text>
               </Pressable>
             ) : (
               <Pressable
-                className="bg-telofy-accent px-4 py-2 rounded-lg"
+                className="bg-goalmax-accent px-4 py-2 rounded-lg"
                 onPress={() => router.push('/(auth)/sign-in')}
               >
-                <Text className="text-telofy-bg font-semibold text-sm">Sign In</Text>
+                <Text className="text-goalmax-bg font-semibold text-sm">Sign In</Text>
               </Pressable>
             )}
           </View>
 
           {/* Sync Status */}
           {isAuthenticated && (
-            <View className="mt-4 pt-4 border-t border-telofy-border">
+            <View className="mt-4 pt-4 border-t border-goalmax-border">
               <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center">
                   <FontAwesome 
@@ -258,7 +258,7 @@ export default function SettingsScreen() {
                     size={16} 
                     color={syncStatus === 'success' ? '#22c55e' : '#52525b'} 
                   />
-                  <Text className="text-telofy-text-secondary text-sm ml-2">
+                  <Text className="text-goalmax-text-secondary text-sm ml-2">
                     {syncStatus === 'syncing' 
                       ? 'Syncing...' 
                       : lastSyncAt 
@@ -267,7 +267,7 @@ export default function SettingsScreen() {
                   </Text>
                 </View>
                 <Pressable
-                  className="bg-telofy-bg px-4 py-2 rounded-lg flex-row items-center"
+                  className="bg-goalmax-bg px-4 py-2 rounded-lg flex-row items-center"
                   onPress={handleSync}
                   disabled={syncStatus === 'syncing'}
                 >
@@ -276,7 +276,7 @@ export default function SettingsScreen() {
                   ) : (
                     <>
                       <FontAwesome name="refresh" size={14} color="#22c55e" />
-                      <Text className="text-telofy-accent text-sm ml-2 font-semibold">Sync</Text>
+                      <Text className="text-goalmax-accent text-sm ml-2 font-semibold">Sync</Text>
                     </>
                   )}
                 </Pressable>
@@ -287,21 +287,21 @@ export default function SettingsScreen() {
 
         {/* Stats */}
         <View className="flex-row mb-6">
-          <View className="flex-1 rounded-2xl bg-telofy-surface border border-telofy-border p-4 mr-2">
-            <Text className="text-telofy-text-secondary text-xs">OBJECTIVES</Text>
-            <Text className="text-telofy-text text-2xl font-bold mt-1">{objectives.length}</Text>
+          <View className="flex-1 rounded-2xl bg-goalmax-surface border border-goalmax-border p-4 mr-2">
+            <Text className="text-goalmax-text-secondary text-xs">OBJECTIVES</Text>
+            <Text className="text-goalmax-text text-2xl font-bold mt-1">{objectives.length}</Text>
           </View>
-          <View className="flex-1 rounded-2xl bg-telofy-surface border border-telofy-border p-4 ml-2">
-            <Text className="text-telofy-text-secondary text-xs">STATUS</Text>
-            <Text className="text-telofy-accent text-lg font-bold mt-1">
+          <View className="flex-1 rounded-2xl bg-goalmax-surface border border-goalmax-border p-4 ml-2">
+            <Text className="text-goalmax-text-secondary text-xs">STATUS</Text>
+            <Text className="text-goalmax-accent text-lg font-bold mt-1">
               {isAuthenticated ? 'Synced' : 'Local'}
             </Text>
           </View>
         </View>
 
         {/* Schedule */}
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 px-4">
-          <Text className="text-telofy-text-secondary text-xs py-4 tracking-wide">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 px-4">
+          <Text className="text-goalmax-text-secondary text-xs py-4 tracking-wide">
             SCHEDULE
           </Text>
           <SettingRow
@@ -318,8 +318,8 @@ export default function SettingsScreen() {
         </View>
 
         {/* Notifications */}
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 px-4">
-          <Text className="text-telofy-text-secondary text-xs py-4 tracking-wide">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 px-4">
+          <Text className="text-goalmax-text-secondary text-xs py-4 tracking-wide">
             NOTIFICATIONS
           </Text>
           <SettingRow
@@ -349,7 +349,7 @@ export default function SettingsScreen() {
               try {
                 await Notifications.scheduleNotificationAsync({
                   content: {
-                    title: '🎯 goalmax Test',
+                    title: '🎯 Goalmax Test',
                     body: 'Notifications are working correctly!',
                     sound: true,
                   },
@@ -395,8 +395,8 @@ export default function SettingsScreen() {
         </View>
 
         {/* Data & Privacy */}
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 px-4">
-          <Text className="text-telofy-text-secondary text-xs py-4 tracking-wide">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 px-4">
+          <Text className="text-goalmax-text-secondary text-xs py-4 tracking-wide">
             DATA & PRIVACY
           </Text>
           <SettingRow
@@ -413,8 +413,8 @@ export default function SettingsScreen() {
         </View>
 
         {/* About */}
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-8 px-4">
-          <Text className="text-telofy-text-secondary text-xs py-4 tracking-wide">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-8 px-4">
+          <Text className="text-goalmax-text-secondary text-xs py-4 tracking-wide">
             ABOUT
           </Text>
           <SettingRow
@@ -436,8 +436,8 @@ export default function SettingsScreen() {
 
         {/* Footer */}
         <View className="items-center pb-8">
-          <Text className="text-telofy-muted text-sm font-semibold">goalmax</Text>
-          <Text className="text-telofy-muted text-xs mt-1">
+          <Text className="text-goalmax-muted text-sm font-semibold">Goalmax</Text>
+          <Text className="text-goalmax-muted text-xs mt-1">
             Turn intention into execution.
           </Text>
         </View>
@@ -446,9 +446,9 @@ export default function SettingsScreen() {
       {/* Timezone Picker Modal */}
       <Modal visible={showTimezoneModal} transparent animationType="slide">
         <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-telofy-surface rounded-t-3xl max-h-[70%]">
-            <View className="flex-row justify-between items-center p-4 border-b border-telofy-border">
-              <Text className="text-telofy-text text-lg font-semibold">Select Timezone</Text>
+          <View className="bg-goalmax-surface rounded-t-3xl max-h-[70%]">
+            <View className="flex-row justify-between items-center p-4 border-b border-goalmax-border">
+              <Text className="text-goalmax-text text-lg font-semibold">Select Timezone</Text>
               <Pressable onPress={() => setShowTimezoneModal(false)}>
                 <FontAwesome name="times" size={24} color="#a1a1aa" />
               </Pressable>
@@ -458,15 +458,15 @@ export default function SettingsScreen() {
               keyExtractor={(item) => item.value}
               renderItem={({ item }) => (
                 <Pressable
-                  className={`flex-row items-center py-4 px-6 border-b border-telofy-border ${
-                    timezone === item.value ? 'bg-telofy-accent/10' : ''
+                  className={`flex-row items-center py-4 px-6 border-b border-goalmax-border ${
+                    timezone === item.value ? 'bg-goalmax-accent/10' : ''
                   }`}
                   onPress={() => {
                     setTimezone(item.value);
                     setShowTimezoneModal(false);
                   }}
                 >
-                  <Text className="flex-1 text-telofy-text">{item.label}</Text>
+                  <Text className="flex-1 text-goalmax-text">{item.label}</Text>
                   {timezone === item.value && (
                     <FontAwesome name="check" size={18} color="#22c55e" />
                   )}
@@ -480,9 +480,9 @@ export default function SettingsScreen() {
       {/* Advance Notice Picker Modal */}
       <Modal visible={showAdvanceNoticeModal} transparent animationType="slide">
         <View className="flex-1 justify-end bg-black/50">
-          <View className="bg-telofy-surface rounded-t-3xl">
-            <View className="flex-row justify-between items-center p-4 border-b border-telofy-border">
-              <Text className="text-telofy-text text-lg font-semibold">Advance Notice</Text>
+          <View className="bg-goalmax-surface rounded-t-3xl">
+            <View className="flex-row justify-between items-center p-4 border-b border-goalmax-border">
+              <Text className="text-goalmax-text text-lg font-semibold">Advance Notice</Text>
               <Pressable onPress={() => setShowAdvanceNoticeModal(false)}>
                 <FontAwesome name="times" size={24} color="#a1a1aa" />
               </Pressable>
@@ -491,15 +491,15 @@ export default function SettingsScreen() {
               {ADVANCE_NOTICE_OPTIONS.map((option) => (
                 <Pressable
                   key={option.value}
-                  className={`flex-row items-center py-4 px-6 border-b border-telofy-border ${
-                    notificationPreference.advanceMinutes === option.value ? 'bg-telofy-accent/10' : ''
+                  className={`flex-row items-center py-4 px-6 border-b border-goalmax-border ${
+                    notificationPreference.advanceMinutes === option.value ? 'bg-goalmax-accent/10' : ''
                   }`}
                   onPress={() => {
                     updateNotificationPreference({ advanceMinutes: option.value });
                     setShowAdvanceNoticeModal(false);
                   }}
                 >
-                  <Text className="flex-1 text-telofy-text">{option.label}</Text>
+                  <Text className="flex-1 text-goalmax-text">{option.label}</Text>
                   {notificationPreference.advanceMinutes === option.value && (
                     <FontAwesome name="check" size={18} color="#22c55e" />
                   )}

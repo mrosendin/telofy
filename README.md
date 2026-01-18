@@ -1,14 +1,14 @@
-# Telofy
+# Goalmax
 
 **Turn intention into execution.**
 
 An AI-powered accountability system that transforms your objectives into completed days.
 
-## What is Telofy?
+## What is Goalmax?
 
-Telofy = *telos* (purpose / end goal) + *-fy* (to make)
+Goalmax = *telos* (purpose / end goal) + *-fy* (to make)
 
-You define the objective function. Telofy handles execution.
+You define the objective function. Goalmax handles execution.
 
 - **Not a wellness app.** A system that ensures you do what you said mattered.
 - **Not a coach.** An execution layer that detects deviations and course-corrects.
@@ -94,7 +94,7 @@ assets/                # Fonts, images, icons
 
 - Nativewind for styling (Tailwind classes via `className`)
 - Dark mode is default
-- Brand colors under `telofy.*` in tailwind.config.js
+- Brand colors under `goalmax.*` in tailwind.config.js
 - Status-oriented language in UI
 
 ### Building for Production

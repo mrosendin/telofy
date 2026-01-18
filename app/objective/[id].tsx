@@ -53,8 +53,8 @@ export default function ObjectiveDetailScreen() {
 
   if (!objective) {
     return (
-      <SafeAreaView className="flex-1 bg-telofy-bg items-center justify-center">
-        <Text className="text-telofy-text">Objective not found</Text>
+      <SafeAreaView className="flex-1 bg-goalmax-bg items-center justify-center">
+        <Text className="text-goalmax-text">Objective not found</Text>
       </SafeAreaView>
     );
   }
@@ -202,13 +202,13 @@ export default function ObjectiveDetailScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-telofy-bg">
+    <SafeAreaView className="flex-1 bg-goalmax-bg">
       {/* Header */}
-      <View className="flex-row items-center justify-between px-5 py-4 border-b border-telofy-border">
+      <View className="flex-row items-center justify-between px-5 py-4 border-b border-goalmax-border">
         <Pressable onPress={() => router.back()} className="p-2 -ml-2">
           <FontAwesome name="arrow-left" size={20} color="#fafafa" />
         </Pressable>
-        <Text className="text-telofy-text text-lg font-semibold flex-1 text-center">
+        <Text className="text-goalmax-text text-lg font-semibold flex-1 text-center">
           {objective.name}
         </Text>
         <Pressable onPress={handlePauseResume} className="p-2 -mr-2">
@@ -222,7 +222,7 @@ export default function ObjectiveDetailScreen() {
 
       <ScrollView className="flex-1 px-5 pt-4">
         {/* Overview Card */}
-        <View className="rounded-2xl p-5 bg-telofy-surface border border-telofy-border mb-6">
+        <View className="rounded-2xl p-5 bg-goalmax-surface border border-goalmax-border mb-6">
           <View className="flex-row items-center mb-4">
             <View
               className="w-14 h-14 rounded-full items-center justify-center"
@@ -231,37 +231,37 @@ export default function ObjectiveDetailScreen() {
               <FontAwesome name={categoryConfig.icon as any} size={24} color={categoryConfig.color} />
             </View>
             <View className="ml-4 flex-1">
-              <Text className="text-telofy-text-secondary text-xs tracking-wide">
+              <Text className="text-goalmax-text-secondary text-xs tracking-wide">
                 {categoryConfig.label.toUpperCase()}
               </Text>
-              <Text className="text-telofy-text text-xl font-bold">{objective.name}</Text>
+              <Text className="text-goalmax-text text-xl font-bold">{objective.name}</Text>
               {objective.isPaused && (
-                <Text className="text-telofy-muted text-sm">Paused</Text>
+                <Text className="text-goalmax-muted text-sm">Paused</Text>
               )}
             </View>
           </View>
           
           <View className="mb-4">
             <View className="flex-row items-center justify-between mb-2">
-              <Text className="text-telofy-text-secondary">Overall Progress</Text>
-              <Text className="text-telofy-accent font-bold">{Math.round(overallProgress)}%</Text>
+              <Text className="text-goalmax-text-secondary">Overall Progress</Text>
+              <Text className="text-goalmax-accent font-bold">{Math.round(overallProgress)}%</Text>
             </View>
-            <View className="h-3 bg-telofy-bg rounded-full overflow-hidden">
+            <View className="h-3 bg-goalmax-bg rounded-full overflow-hidden">
               <View
-                className="h-full bg-telofy-accent rounded-full"
+                className="h-full bg-goalmax-accent rounded-full"
                 style={{ width: `${overallProgress}%` }}
               />
             </View>
           </View>
 
-          <Text className="text-telofy-text-secondary text-sm">{objective.targetOutcome}</Text>
+          <Text className="text-goalmax-text-secondary text-sm">{objective.targetOutcome}</Text>
         </View>
 
         {/* Task Actions */}
         <View className="flex-row gap-3 mb-6">
           <Pressable
             className={`flex-1 rounded-2xl p-4 flex-row items-center justify-center ${
-              isGeneratingTasks ? 'bg-telofy-muted/20' : 'bg-telofy-accent'
+              isGeneratingTasks ? 'bg-goalmax-muted/20' : 'bg-goalmax-accent'
             }`}
             onPress={handleGenerateTasks}
             disabled={isGeneratingTasks || objective.isPaused}
@@ -269,48 +269,48 @@ export default function ObjectiveDetailScreen() {
             {isGeneratingTasks ? (
               <>
                 <ActivityIndicator color="#0a0a0b" size="small" />
-                <Text className="text-telofy-bg font-semibold ml-2 text-sm">Generating...</Text>
+                <Text className="text-goalmax-bg font-semibold ml-2 text-sm">Generating...</Text>
               </>
             ) : (
               <>
                 <FontAwesome name="magic" size={16} color="#0a0a0b" />
-                <Text className="text-telofy-bg font-semibold ml-2 text-sm">Generate Tasks</Text>
+                <Text className="text-goalmax-bg font-semibold ml-2 text-sm">Generate Tasks</Text>
               </>
             )}
           </Pressable>
           
           {todaysTasks.length > 0 && (
             <Pressable
-              className="rounded-2xl p-4 flex-row items-center justify-center bg-telofy-surface border border-telofy-border"
+              className="rounded-2xl p-4 flex-row items-center justify-center bg-goalmax-surface border border-goalmax-border"
               onPress={handleClearTodaysTasks}
             >
               <FontAwesome name="trash-o" size={16} color="#71717a" />
-              <Text className="text-telofy-text-secondary font-semibold ml-2 text-sm">Clear</Text>
+              <Text className="text-goalmax-text-secondary font-semibold ml-2 text-sm">Clear</Text>
             </Pressable>
           )}
         </View>
 
         {/* Pillars */}
-        <Text className="text-telofy-text-secondary text-sm mb-3 tracking-wide">
+        <Text className="text-goalmax-text-secondary text-sm mb-3 tracking-wide">
           PILLARS ({objective.pillars.length})
         </Text>
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 overflow-hidden">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 overflow-hidden">
           {objective.pillars.map((pillar, i) => (
             <View
               key={pillar.id}
-              className={`p-4 ${i > 0 ? 'border-t border-telofy-border' : ''}`}
+              className={`p-4 ${i > 0 ? 'border-t border-goalmax-border' : ''}`}
             >
               <View className="flex-row items-center justify-between mb-2">
-                <Text className="text-telofy-text font-medium flex-1">{pillar.name}</Text>
-                <Text className="text-telofy-accent font-semibold">{Math.round(pillar.progress)}%</Text>
+                <Text className="text-goalmax-text font-medium flex-1">{pillar.name}</Text>
+                <Text className="text-goalmax-accent font-semibold">{Math.round(pillar.progress)}%</Text>
               </View>
-              <View className="h-2 bg-telofy-bg rounded-full overflow-hidden">
+              <View className="h-2 bg-goalmax-bg rounded-full overflow-hidden">
                 <View
-                  className="h-full bg-telofy-accent/70 rounded-full"
+                  className="h-full bg-goalmax-accent/70 rounded-full"
                   style={{ width: `${pillar.progress}%` }}
                 />
               </View>
-              <Text className="text-telofy-text-secondary text-xs mt-1">
+              <Text className="text-goalmax-text-secondary text-xs mt-1">
                 {Math.round(pillar.weight * 100)}% weight
               </Text>
             </View>
@@ -318,20 +318,20 @@ export default function ObjectiveDetailScreen() {
         </View>
 
         {/* Metrics */}
-        <Text className="text-telofy-text-secondary text-sm mb-3 tracking-wide">
+        <Text className="text-goalmax-text-secondary text-sm mb-3 tracking-wide">
           METRICS ({objective.metrics.length})
         </Text>
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 overflow-hidden">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 overflow-hidden">
           {objective.metrics.map((metric, i) => (
             <Pressable
               key={metric.id}
-              className={`p-4 flex-row items-center ${i > 0 ? 'border-t border-telofy-border' : ''} active:opacity-80`}
+              className={`p-4 flex-row items-center ${i > 0 ? 'border-t border-goalmax-border' : ''} active:opacity-80`}
               onPress={() => handleLogMetric(metric)}
             >
               <View className="flex-1">
-                <Text className="text-telofy-text font-medium">{metric.name}</Text>
-                <View className="flex-row items-baseline mt-1"><Text className="text-telofy-text text-2xl font-bold">{metric.current ?? '—'}</Text><Text className="text-telofy-text-secondary ml-1">{metric.unit}</Text>{metric.target && (<Text className="text-telofy-text-secondary ml-2">/ {metric.target}</Text>)}</View>
-                <Text className="text-telofy-text-secondary text-xs mt-1">
+                <Text className="text-goalmax-text font-medium">{metric.name}</Text>
+                <View className="flex-row items-baseline mt-1"><Text className="text-goalmax-text text-2xl font-bold">{metric.current ?? '—'}</Text><Text className="text-goalmax-text-secondary ml-1">{metric.unit}</Text>{metric.target && (<Text className="text-goalmax-text-secondary ml-2">/ {metric.target}</Text>)}</View>
+                <Text className="text-goalmax-text-secondary text-xs mt-1">
                   {metric.history.length} entries
                 </Text>
               </View>
@@ -341,43 +341,43 @@ export default function ObjectiveDetailScreen() {
         </View>
 
         {/* Rituals */}
-        <Text className="text-telofy-text-secondary text-sm mb-3 tracking-wide">
+        <Text className="text-goalmax-text-secondary text-sm mb-3 tracking-wide">
           RITUALS ({objective.rituals.length})
         </Text>
-        <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 overflow-hidden">
+        <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 overflow-hidden">
           {objective.rituals.map((ritual, i) => {
             const completedToday = isRitualCompletedToday(ritual);
             return (
               <Pressable
                 key={ritual.id}
-                className={`p-4 flex-row items-center ${i > 0 ? 'border-t border-telofy-border' : ''} active:opacity-80`}
+                className={`p-4 flex-row items-center ${i > 0 ? 'border-t border-goalmax-border' : ''} active:opacity-80`}
                 onPress={() => !completedToday && handleCompleteRitual(ritual)}
                 disabled={completedToday}
               >
                 <View className="flex-1">
                   <View className="flex-row items-center">
-                    <Text className={`font-medium ${completedToday ? 'text-telofy-accent' : 'text-telofy-text'}`}>
+                    <Text className={`font-medium ${completedToday ? 'text-goalmax-accent' : 'text-goalmax-text'}`}>
                       {ritual.name}
                     </Text>
                     {completedToday && (
                       <FontAwesome name="check" size={12} color="#22c55e" style={{ marginLeft: 8 }} />
                     )}
                   </View>
-                  <Text className="text-telofy-text-secondary text-sm mt-1">
+                  <Text className="text-goalmax-text-secondary text-sm mt-1">
                     {ritual.timesPerPeriod}x/{ritual.frequency} • ~{ritual.estimatedMinutes} min
                   </Text>
                   <View className="flex-row items-center mt-2">
                     <FontAwesome name="fire" size={12} color="#f59e0b" />
-                    <Text className="text-telofy-warning text-xs ml-1">
+                    <Text className="text-goalmax-warning text-xs ml-1">
                       {ritual.currentStreak} day streak
                     </Text>
-                    <Text className="text-telofy-text-secondary text-xs ml-2">
+                    <Text className="text-goalmax-text-secondary text-xs ml-2">
                       (best: {ritual.longestStreak})
                     </Text>
                   </View>
                 </View>
                 {!completedToday && (
-                  <View className="w-10 h-10 rounded-full border-2 border-telofy-accent items-center justify-center">
+                  <View className="w-10 h-10 rounded-full border-2 border-goalmax-accent items-center justify-center">
                     <FontAwesome name="check" size={16} color="#22c55e" />
                   </View>
                 )}
@@ -389,22 +389,22 @@ export default function ObjectiveDetailScreen() {
         {/* Today's Tasks */}
         {todaysTasks.length > 0 && (
           <>
-            <Text className="text-telofy-text-secondary text-sm mb-3 tracking-wide">
+            <Text className="text-goalmax-text-secondary text-sm mb-3 tracking-wide">
               TODAY'S TASKS ({todaysTasks.length})
             </Text>
-            <View className="rounded-2xl bg-telofy-surface border border-telofy-border mb-6 overflow-hidden">
+            <View className="rounded-2xl bg-goalmax-surface border border-goalmax-border mb-6 overflow-hidden">
               {todaysTasks.slice(0, 5).map((task, i) => (
                 <View
                   key={task.id}
-                  className={`p-4 flex-row items-center ${i > 0 ? 'border-t border-telofy-border' : ''}`}
+                  className={`p-4 flex-row items-center ${i > 0 ? 'border-t border-goalmax-border' : ''}`}
                 >
                   <View
                     className={`w-6 h-6 rounded-full border-2 mr-3 items-center justify-center ${
                       task.status === 'completed'
-                        ? 'bg-telofy-accent border-telofy-accent'
+                        ? 'bg-goalmax-accent border-goalmax-accent'
                         : task.status === 'skipped'
-                        ? 'bg-telofy-muted/20 border-telofy-muted'
-                        : 'border-telofy-border'
+                        ? 'bg-goalmax-muted/20 border-goalmax-muted'
+                        : 'border-goalmax-border'
                     }`}
                   >
                     {task.status === 'completed' && (
@@ -418,13 +418,13 @@ export default function ObjectiveDetailScreen() {
                     <Text
                       className={`font-medium ${
                         task.status === 'completed' || task.status === 'skipped'
-                          ? 'text-telofy-text-secondary line-through'
-                          : 'text-telofy-text'
+                          ? 'text-goalmax-text-secondary line-through'
+                          : 'text-goalmax-text'
                       }`}
                     >
                       {task.title}
                     </Text>
-                    <Text className="text-telofy-text-secondary text-xs">
+                    <Text className="text-goalmax-text-secondary text-xs">
                       {new Date(task.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       {' • '}{task.durationMinutes} min
                     </Text>
@@ -436,14 +436,14 @@ export default function ObjectiveDetailScreen() {
         )}
 
         {/* Danger Zone */}
-        <View className="mt-8 pt-6 border-t border-telofy-border">
-          <Text className="text-telofy-error/60 text-xs tracking-wide mb-3">DANGER ZONE</Text>
+        <View className="mt-8 pt-6 border-t border-goalmax-border">
+          <Text className="text-goalmax-error/60 text-xs tracking-wide mb-3">DANGER ZONE</Text>
           <Pressable
-            className="rounded-xl p-4 flex-row items-center justify-center bg-telofy-error/10 border border-telofy-error/30"
+            className="rounded-xl p-4 flex-row items-center justify-center bg-goalmax-error/10 border border-goalmax-error/30"
             onPress={handleDeleteObjective}
           >
             <FontAwesome name="trash" size={16} color="#ef4444" />
-            <Text className="text-telofy-error font-semibold ml-3">Delete Objective</Text>
+            <Text className="text-goalmax-error font-semibold ml-3">Delete Objective</Text>
           </Pressable>
         </View>
 
@@ -457,16 +457,16 @@ export default function ObjectiveDetailScreen() {
           className="flex-1"
         >
           <View className="flex-1 bg-black/60 justify-end">
-            <View className="bg-telofy-surface rounded-t-3xl p-6">
-              <Text className="text-telofy-text text-xl font-bold mb-2">
+            <View className="bg-goalmax-surface rounded-t-3xl p-6">
+              <Text className="text-goalmax-text text-xl font-bold mb-2">
                 Log {selectedMetric?.name}
               </Text>
-              <Text className="text-telofy-text-secondary mb-6">
+              <Text className="text-goalmax-text-secondary mb-6">
                 Enter current value in {selectedMetric?.unit}
               </Text>
 
               <TextInput
-                className="text-telofy-text text-3xl font-bold p-4 rounded-xl bg-telofy-bg border border-telofy-border text-center mb-4"
+                className="text-goalmax-text text-3xl font-bold p-4 rounded-xl bg-goalmax-bg border border-goalmax-border text-center mb-4"
                 style={{ textAlignVertical: 'center' }}
                 value={inputValue}
                 onChangeText={setInputValue}
@@ -477,7 +477,7 @@ export default function ObjectiveDetailScreen() {
               />
 
               <TextInput
-                className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
+                className="text-goalmax-text p-4 rounded-xl bg-goalmax-bg border border-goalmax-border mb-6"
                 style={{ textAlignVertical: 'center' }}
                 value={note}
                 onChangeText={setNote}
@@ -487,16 +487,16 @@ export default function ObjectiveDetailScreen() {
 
               <View className="flex-row gap-3">
                 <Pressable
-                  className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
+                  className="flex-1 rounded-xl py-4 items-center bg-goalmax-bg border border-goalmax-border"
                   onPress={() => setModalType(null)}
                 >
-                  <Text className="text-telofy-text font-semibold">Cancel</Text>
+                  <Text className="text-goalmax-text font-semibold">Cancel</Text>
                 </Pressable>
                 <Pressable
-                  className="flex-1 rounded-xl py-4 items-center bg-telofy-accent"
+                  className="flex-1 rounded-xl py-4 items-center bg-goalmax-accent"
                   onPress={submitMetric}
                 >
-                  <Text className="text-telofy-bg font-semibold">Save</Text>
+                  <Text className="text-goalmax-bg font-semibold">Save</Text>
                 </Pressable>
               </View>
             </View>
@@ -511,21 +511,21 @@ export default function ObjectiveDetailScreen() {
           className="flex-1"
         >
           <View className="flex-1 bg-black/60 justify-end">
-            <View className="bg-telofy-surface rounded-t-3xl p-6">
+            <View className="bg-goalmax-surface rounded-t-3xl p-6">
               <View className="items-center mb-6">
-                <View className="w-20 h-20 rounded-full bg-telofy-accent/20 items-center justify-center mb-4">
+                <View className="w-20 h-20 rounded-full bg-goalmax-accent/20 items-center justify-center mb-4">
                   <FontAwesome name="check" size={40} color="#22c55e" />
                 </View>
-                <Text className="text-telofy-text text-xl font-bold">
+                <Text className="text-goalmax-text text-xl font-bold">
                   Complete {selectedRitual?.name}?
                 </Text>
-                <Text className="text-telofy-text-secondary mt-1">
+                <Text className="text-goalmax-text-secondary mt-1">
                   Current streak: {selectedRitual?.currentStreak} days
                 </Text>
               </View>
 
               <TextInput
-                className="text-telofy-text p-4 rounded-xl bg-telofy-bg border border-telofy-border mb-6"
+                className="text-goalmax-text p-4 rounded-xl bg-goalmax-bg border border-goalmax-border mb-6"
                 style={{ textAlignVertical: 'center' }}
                 value={note}
                 onChangeText={setNote}
@@ -535,16 +535,16 @@ export default function ObjectiveDetailScreen() {
 
               <View className="flex-row gap-3">
                 <Pressable
-                  className="flex-1 rounded-xl py-4 items-center bg-telofy-bg border border-telofy-border"
+                  className="flex-1 rounded-xl py-4 items-center bg-goalmax-bg border border-goalmax-border"
                   onPress={() => setModalType(null)}
                 >
-                  <Text className="text-telofy-text font-semibold">Cancel</Text>
+                  <Text className="text-goalmax-text font-semibold">Cancel</Text>
                 </Pressable>
                 <Pressable
-                  className="flex-1 rounded-xl py-4 items-center bg-telofy-accent"
+                  className="flex-1 rounded-xl py-4 items-center bg-goalmax-accent"
                   onPress={submitRitual}
                 >
-                  <Text className="text-telofy-bg font-semibold">Complete</Text>
+                  <Text className="text-goalmax-bg font-semibold">Complete</Text>
                 </Pressable>
               </View>
             </View>

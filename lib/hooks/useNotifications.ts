@@ -104,14 +104,14 @@ async function registerForPushNotifications(): Promise<string | null> {
 
   // Configure Android channel
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('telofy-tasks', {
+    await Notifications.setNotificationChannelAsync('goalmax-tasks', {
       name: 'Task Reminders',
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#22c55e',
     });
 
-    await Notifications.setNotificationChannelAsync('telofy-deviations', {
+    await Notifications.setNotificationChannelAsync('goalmax-deviations', {
       name: 'Deviation Alerts',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 500, 200, 500],
@@ -164,7 +164,7 @@ export async function scheduleEscalationNotification(
   const notificationId = await Notifications.scheduleNotificationAsync({
     content: {
       title: 'Task Overdue',
-      body: `"${task.title}" was scheduled and not completed. goalmax detected a deviation.`,
+      body: `"${task.title}" was scheduled and not completed. Goalmax detected a deviation.`,
       data: { taskId: task.id, type: 'escalation' },
       sound: true,
       priority: Notifications.AndroidNotificationPriority.MAX,

@@ -1,7 +1,7 @@
-# Telofy Mobile App - AI Development Guidelines
+# Goalmax Mobile App - AI Development Guidelines
 
 ## Project Overview
-Telofy is an AI-powered accountability and execution system. This is the Expo React Native mobile app.
+Goalmax is an AI-powered accountability and execution system. This is the Expo React Native mobile app.
 
 ## Brand Voice
 - **Tone**: Serious, system-like, authoritative but not hostile
@@ -47,9 +47,9 @@ assets/
 
 ### Styling with Nativewind
 - Use Tailwind classes via `className` prop
-- Brand colors in tailwind.config.js under `telofy.*`
+- Brand colors in tailwind.config.js under `goalmax.*`
 - Dark mode is default
-- Example: `className="bg-telofy-bg text-telofy-text"`
+- Example: `className="bg-goalmax-bg text-goalmax-text"`
 
 ### State Management
 - Zustand stores in `lib/store/`

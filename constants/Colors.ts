@@ -1,9 +1,9 @@
 /**
- * goalmax color constants
+ * Goalmax color constants
  * Primary color scheme is dark with green accents
  */
 
-const telofy = {
+const goalmax = {
   bg: '#0a0a0b',
   surface: '#141416',
   border: '#27272a',
@@ -17,18 +17,18 @@ const telofy = {
 
 export default {
   light: {
-    text: telofy.text,
-    background: telofy.bg,
-    tint: telofy.accent,
-    tabIconDefault: telofy.muted,
-    tabIconSelected: telofy.accent,
+    text: goalmax.text,
+    background: goalmax.bg,
+    tint: goalmax.accent,
+    tabIconDefault: goalmax.muted,
+    tabIconSelected: goalmax.accent,
   },
   dark: {
-    text: telofy.text,
-    background: telofy.bg,
-    tint: telofy.accent,
-    tabIconDefault: telofy.muted,
-    tabIconSelected: telofy.accent,
+    text: goalmax.text,
+    background: goalmax.bg,
+    tint: goalmax.accent,
+    tabIconDefault: goalmax.muted,
+    tabIconSelected: goalmax.accent,
   },
-  telofy,
+  goalmax,
 };
