@@ -313,9 +313,8 @@ async function syncTasks(): Promise<{ errors: string[] }> {
   const { addTasks } = useTaskStore.getState();
   const errors: string[] = [];
 
-  // Get today's tasks from remote
-  const today = new Date().toISOString().split('T')[0];
-  const { tasks: remoteTasks } = await api.getTasks(today);
+  // Get all tasks from remote (not just today's)
+  const { tasks: remoteTasks } = await api.getTasks();
 
   // Create maps
   const remoteMap = new Map(remoteTasks.map((t) => [t.id, t]));
